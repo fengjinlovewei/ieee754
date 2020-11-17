@@ -1,24 +1,24 @@
-import React from 'react'
+import React from 'react';
 import { Input, Select, Button } from 'antd';
 
-import './index.css'
+import './index.css';
 
 const { Option } = Select;
 
 export default () => {
   const enCode = (value) => {
-    console.log(value)
-  }
+    console.log(value);
+  };
   const typeFn = (e) => {
-    let value = e.target.value
-  }
+    let value = e.target.value;
+  };
   const numFn = (e) => {
-    let value = e.target.value
-  }
+    let value = e.target.value;
+  };
   return (
     <div className="center">
       <div className="search-box1">
-        <Input.Group compact >
+        <Input.Group compact>
           <Select defaultValue="a" onChange={typeFn}>
             <Option value="a">原码</Option>
             <Option value="b">补码</Option>
@@ -29,12 +29,13 @@ export default () => {
             <Option value="64">64位</Option>
           </Select>
         </Input.Group>
-        <div style={{flex: 1}}>
-          <Input placeholder="请输入10进制的值" style={{width: '290px',}}/>
+        <div style={{ flex: 1 }}>
+          <Input placeholder="请输入10进制的值" style={{ width: '290px' }} />
         </div>
-        <Button type="primary" onClick={enCode}>编码</Button>
+        <Button type="primary" onClick={enCode}>
+          编码
+        </Button>
       </div>
-
     </div>
-  )
-}
+  );
+};

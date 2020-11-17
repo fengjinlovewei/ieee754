@@ -1,0 +1,33 @@
+.bit-item {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  font-size: 26px;
+  text-align: center;
+  border-right: 2px solid #fff;
+  margin-bottom: 5px;
+}
+
+.bit-s {
+  color: #fff;
+  background-color: #ff6666;
+}
+
+.bit-e {
+  color: #fff;
+  background-color: #3399cc;
+}
+
+.bit-m {
+  color: #fff;
+  background-color: #009933;
+}
+.bit-z1 {
+  color: #333;
+  background-color: #ffff00;
+}
+.bit-z2 {
+  color: #333;
+  background-color: #cc6600;
+}

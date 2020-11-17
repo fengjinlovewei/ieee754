@@ -1,0 +1,21 @@
+.bit-box {
+  padding-left: 30px;
+  /* flex-shrink: 0; */
+}
+.bit-line {
+  position: relative;
+}
+.bit-tip {
+  position: absolute;
+  width: 60px;
+  top: 0;
+  left: -60px;
+  font-weight: 600;
+  text-align: right;
+}
+.user {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}

@@ -1,11 +1,11 @@
 import Calc, { NumberToFilter, removeAfterZero, NumberToString } from '@/utils/calc';
 
 //0.0000000000000000000000001
-//console.log(NumberToString(5e-324))
+//console.log(NumberToString(5e-324));
 //console.log(ToAdd(10, '', ''))
 //console.log(NumberToString('2.220446049250313e-16'))
 //console.log(BinaryToDecimal('0.010011001100110011001100110011001100110011001100110100'))
-//console.log(IEEE754ToDecimal({ Sign: '0', Exponent: '11100000000', Mantissa:Fill(52,'1') }))
+//console.log(ToFloat('0.000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005'));
 //特殊值常量
 const SpecialValue = (() => {
   const Z_11_0 = Fill(11),
@@ -147,9 +147,18 @@ export function ToInt(int) {
   if (int < 2) {
     return int;
   }
-  let co1 = int % 2;
-  let co2 = (int - co1) / 2;
-  return '' + ToInt(co2) + co1;
+  int = `${int}`;
+  const intArr = int.split('');
+  let tip = 0,
+    str = '';
+  for (let n of intArr) {
+    n = tip ? +n + 10 : n;
+    let a = n / 2,
+      b = a >> 0;
+    tip = a === b ? 0 : 1;
+    str += b;
+  }
+  return '' + ToInt(+str) + tip;
 }
 //10进制小数转化2进制
 //注意：返回值以.开头，而不是0.

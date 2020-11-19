@@ -128,7 +128,6 @@ function getChild(arr) {
   return { arr, all, max, min };
 }
 function pad(num) {
-  console.log(num);
   // 如果是1e-25这种不带小数点的 返回0
   let len = num.other.length === 4 ? 0 : num.other[3].length;
   if (num.order < 0) {

@@ -114,7 +114,6 @@ export default () => {
       // left的第一位肯定是1，所致直接去后面所有的值和 right 拼接就好了
       // 然后和 right 拼接成隐藏位 + 尾数 + 舍入位
       all = left.slice(1) + rigth;
-      console.log(all);
       setTotal({
         ...total,
         Exponent,
@@ -145,7 +144,6 @@ export default () => {
     return progress > num;
   };
   const matchDom = () => {
-    console.log(total);
     return (
       <div>
         <div className="page3-btn-box">

@@ -4,18 +4,15 @@ import IEEE754 from '@/coms/ieee754';
 import { IEEE754ToDecimal, isSpecialValue } from '@/utils';
 import './index.css';
 
-const { Search } = Input;
 export default () => {
   const [bitMap, setBitMap] = useState([]);
   const input = useRef(null);
   const enCode = () => {
     let value = input.current.state.value;
-    console.log(value);
     let arr = value.split(',').map((item) => validation(item));
     setBitMap(arr);
   };
   const validation = (iee754) => {
-    debugger;
     const reg = /^[01]{64}$/;
     const Sign = iee754.slice(0, 1);
     const Exponent = iee754.slice(1, 12);

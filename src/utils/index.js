@@ -375,7 +375,6 @@ export function ToRound({ Sign, Exponent, Mantissa, Round }) {
   });
   roundValue.DecimalTruthValue = before.DecimalTruthValue;
   roundValue.BinaryTruthValue = removeAfterZero(before.BinaryTruthValue);
-  console.log(roundValue);
   return roundValue;
 }
 //转化成IEEE754格式总函数
@@ -448,4 +447,33 @@ export function sortMiddleware(key) {
   return (a, b) => {
     return b[key] - a[key];
   };
+}
+// 原码
+export function ToTrueCode({ value = '', bits = '32' }) {
+  bits--;
+  value = `${value}`;
+  const Sign = value.indexOf('-') > -1 ? '1' : '0';
+  value = value.replace('-', '');
+  value = ToInt(value);
+  value = value.slice(~bits + 1);
+  value = Fill(bits - value.length) + value;
+  return Sign + value;
+}
+// 反码
+export function ToOnesComplementCode(value = '') {
+  const key = ['1', '0'];
+  value = value.split('');
+  const Sign = value.shift();
+  return Sign + value.map((item) => key[item]).join('');
+}
+// 补码
+export function ToComplementCode({ value = '', bits = '32' }) {
+  value = ToTrueCode({ value, bits });
+  if (value[0] === '0') {
+    return value;
+  }
+  value = ToOnesComplementCode(value);
+
+  value = ToAdd(2, value, 1);
+  return value.slice(~bits + 1);
 }

@@ -329,8 +329,8 @@ export function IEEE754ToDecimal({ Sign, Exponent, Mantissa }) {
   Mantissa = (1 + Mantissa).split('');
   if (Exponent >= 0) {
     //得到二进制真值
-    if (Exponent > Mantissa.length) {
-      BinaryTruthValue = Mantissa.join('') + Fill(Exponent - Mantissa.length);
+    if (Exponent > 52) {
+      BinaryTruthValue = Mantissa.join('') + Fill(Exponent - 52);
     } else {
       Mantissa.splice(Exponent + 1, 0, '.');
       BinaryTruthValue = Mantissa.join('');

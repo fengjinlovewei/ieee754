@@ -2,17 +2,17 @@ import Calc, { NumberToFilter, removeAfterZero, NumberToString } from '@/utils/c
 
 //0.0000000000000000000000001
 //console.log(NumberToString(5e-324));
-//console.log(ToAdd(10, '', ''))
+//console.log(toAdd(10, '', ''))
 //console.log(NumberToString('2.220446049250313e-16'))
-//console.log(BinaryToDecimal('0.010011001100110011001100110011001100110011001100110100'))
-//console.log(ToFloat('0.000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005'));
+//console.log(binaryToDecimal('0.010011001100110011001100110011001100110011001100110100'))
+//console.log(toFloat('0.000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005'));
 //特殊值常量
 const SpecialValue = (() => {
-  const Z_11_0 = Fill(11),
-    Z_11_1 = Fill(11, 1),
-    Z_16_0 = Fill(16),
-    Z_51_0 = Fill(51),
-    Z_52_0 = Fill(52);
+  const Z_11_0 = fill(11),
+    Z_11_1 = fill(11, 1),
+    Z_16_0 = fill(16),
+    Z_51_0 = fill(51),
+    Z_52_0 = fill(52);
 
   return new Map([
     [
@@ -138,11 +138,11 @@ const SpecialValue = (() => {
   ]);
 })();
 // 填充函数
-export function Fill(length, value = 0) {
+export function fill(length, value = 0) {
   return ''.padEnd(length, value);
 }
 //10进制整数转化2进制
-export function ToInt(int) {
+export function toInt(int) {
   if (!int) return 0;
   if (int < 2) {
     return int;
@@ -158,12 +158,12 @@ export function ToInt(int) {
     tip = a === b ? 0 : 1;
     str += b;
   }
-  return '' + ToInt(+str) + tip;
+  return '' + toInt(+str) + tip;
 }
 //10进制小数转化2进制
 //注意：返回值以.开头，而不是0.
 //这个点有用，作为分隔符
-export function ToFloat(float, length = 1024) {
+export function toFloat(float, length = 1024) {
   let floatStr = '.';
   if (!float) return floatStr;
   for (let i = 0; i < length; i++) {
@@ -179,14 +179,14 @@ export function ToFloat(float, length = 1024) {
   return floatStr;
 }
 //转化成2进制总函数（可以是整数，小数，浮点数）
-export function ToBinary(num) {
+export function toBinary(num) {
   let [int, float] = num.split('.');
-  let intStr = int ? ToInt(int) : '0';
-  let floatStr = float ? ToFloat(`0.${float}`) : '.';
+  let intStr = int ? toInt(int) : '0';
+  let floatStr = float ? toFloat(`0.${float}`) : '.';
   return intStr + floatStr;
 }
 //二进制转化10进制
-export function BinaryToDecimal(value) {
+export function binaryToDecimal(value) {
   value = `${value}`;
   let [int, float] = value.replace('-', '').split('.');
   const clone = () => ({
@@ -205,7 +205,7 @@ export function BinaryToDecimal(value) {
             size: size - i
           }
         ],
-        value: ToAdd(10, total.value, item === '1' ? `${2 ** (size - i)}` : '0')
+        value: toAdd(10, total.value, item === '1' ? `${2 ** (size - i)}` : '0')
       };
     }, clone());
   } else {
@@ -222,7 +222,7 @@ export function BinaryToDecimal(value) {
             size: ~i
           }
         ],
-        value: ToAdd(10, total.value, item === '1' ? `${2 ** ~i}` : '0')
+        value: toAdd(10, total.value, item === '1' ? `${2 ** ~i}` : '0')
       };
     }, clone());
   } else {
@@ -231,11 +231,11 @@ export function BinaryToDecimal(value) {
   return {
     truthSign: value.indexOf('-') > -1 ? '-' : '',
     text: int.text.concat(float.text),
-    value: removeAfterZero(ToAdd(10, int.value, float.value))
+    value: removeAfterZero(toAdd(10, int.value, float.value))
   };
 }
 //无精度损失加法计算, base参数为进制数
-export function ToAdd(base, ...arg) {
+export function toAdd(base, ...arg) {
   //首先把参与加法计算的参数格式化
   arg = arg.map((t) => NumberToFilter(t));
   //取出最小的指数，因为其他数字要与此值为基准，就是以值对阶
@@ -253,7 +253,7 @@ export function ToAdd(base, ...arg) {
   // 把所有要参与运算的值进行对阶
   let newArg = arg.map((t) => {
     let //大阶向小阶看齐；然后比如10进制：6702，转化成['2','0','7','6']
-      value = (t.value + Fill(t.order - order.min)).split('').reverse(),
+      value = (t.value + fill(t.order - order.min)).split('').reverse(),
       length = value.length;
     // 如果长度比现有的大，就覆盖
     if (length > len) {
@@ -280,7 +280,7 @@ export function ToAdd(base, ...arg) {
   // 运算结束如果还有tip，说明最高位最后的tip，与要把tip转换成基数为base的值
   // 因为tip本身是10进制的，能想明白不。
   if (tip) {
-    totalArr.unshift(base == 10 ? tip : ToInt(tip));
+    totalArr.unshift(base == 10 ? tip : toInt(tip));
   }
   //运算完成之后还要把阶数还回去
   if (order.min < 0) {
@@ -311,11 +311,11 @@ export function isSpecialValue({ Sign, Exponent, Mantissa }) {
 }
 // 判断是否为数字类型
 export function isNumber(value) {
-  let reg = /(^-?[0-9]+((.([0-9]+(e\+|e\-))?[0-9]+)|((e\+|e\-)[0-9]+))?)$/;
+  const reg = /(^-?[0-9]+((.([0-9]+(e\+|e\-))?[0-9]+)|((e\+|e\-)[0-9]+))?)$/;
   return reg.test(value);
 }
 //IEEE754转10进制和2进制
-export function IEEE754ToDecimal({ Sign, Exponent, Mantissa }) {
+export function ieee754ToDecimal({ Sign, Exponent, Mantissa }) {
   if (Exponent.length !== 11) {
     return console.error('指数不是11位!!');
   }
@@ -324,28 +324,28 @@ export function IEEE754ToDecimal({ Sign, Exponent, Mantissa }) {
   }
   let truthSign = Sign === '0' ? '' : '-';
   let BinaryTruthValue, DecimalTruthValue;
-  Exponent = BinaryToDecimal(Exponent).value - 1023;
+  Exponent = binaryToDecimal(Exponent).value - 1023;
   //补上隐藏的1.
   Mantissa = (1 + Mantissa).split('');
   if (Exponent >= 0) {
     //得到二进制真值
     if (Exponent > 52) {
-      BinaryTruthValue = Mantissa.join('') + Fill(Exponent - 52);
+      BinaryTruthValue = Mantissa.join('') + fill(Exponent - 52);
     } else {
       Mantissa.splice(Exponent + 1, 0, '.');
       BinaryTruthValue = Mantissa.join('');
     }
   } else {
     //得到二进制真值
-    BinaryTruthValue = `0.${Fill(~Exponent)}` + Mantissa.join('');
+    BinaryTruthValue = `0.${fill(~Exponent)}` + Mantissa.join('');
   }
   //得到十进制真值
-  DecimalTruthValue = BinaryToDecimal(truthSign + BinaryTruthValue);
+  DecimalTruthValue = binaryToDecimal(truthSign + BinaryTruthValue);
   return { BinaryTruthValue, DecimalTruthValue };
 }
 //舍入函数
 // Exponent, Mantissa, Round 是必须填写的
-export function ToRound({ Sign, Exponent, Mantissa, Round }) {
+export function toRound({ Sign, Exponent, Mantissa, Round }) {
   const roundValue = { Sign, Exponent, Mantissa };
   //如果舍入位第一位为1，后面也存在1，那么符合进1条件
   const v1 = Round[0] == 1 && Round.match(/1/g).length > 1;
@@ -353,11 +353,11 @@ export function ToRound({ Sign, Exponent, Mantissa, Round }) {
   const v2 = Round[0] == 1 && Mantissa[51] == 1;
   if (v1 || v2) {
     //获得进位后的尾数
-    let tip = ToAdd(2, 1 + Mantissa, 1);
+    let tip = toAdd(2, 1 + Mantissa, 1);
     //如果尾数 > 53 说明进位了1
     if (tip.length > 53) {
       roundValue.Mantissa = tip.substr(1, 52);
-      roundValue.Exponent = ToAdd(2, Exponent, 1);
+      roundValue.Exponent = toAdd(2, Exponent, 1);
       //查看舍入后的值是否是特殊值，比如溢出什么的
       let Special = isSpecialValue(roundValue);
       if (Special) {
@@ -368,7 +368,7 @@ export function ToRound({ Sign, Exponent, Mantissa, Round }) {
       roundValue.Mantissa = tip.substr(1, 52);
     }
   }
-  let before = IEEE754ToDecimal({
+  let before = ieee754ToDecimal({
     Sign,
     Exponent: roundValue.Exponent,
     Mantissa: roundValue.Mantissa
@@ -378,7 +378,7 @@ export function ToRound({ Sign, Exponent, Mantissa, Round }) {
   return roundValue;
 }
 //转化成IEEE754格式总函数
-export function ToIEEE754(value) {
+export function toIEEE754(value) {
   value = `${value}`;
   if (SpecialValue.has(value)) return SpecialValue.get(value);
   if (!isNumber(value)) {
@@ -396,7 +396,7 @@ export function ToIEEE754(value) {
   //去掉真值的符号
   let DecimalTruthValue = (value = value.replace('-', ''));
   //得到二进制编码
-  let Binary = ToBinary(value);
+  let Binary = toBinary(value);
 
   //找第一个1，和第一个.得到指数真值
   let exponentTruthValue = Binary.indexOf('.') - Binary.indexOf('1');
@@ -405,15 +405,15 @@ export function ToIEEE754(value) {
     exponentTruthValue--;
   }
   //得到编码后的指数
-  let Exponent = ToInt(exponentTruthValue + 1023);
-  Exponent = Fill(11 - Exponent.length) + Exponent;
+  let Exponent = toInt(exponentTruthValue + 1023);
+  Exponent = fill(11 - Exponent.length) + Exponent;
 
   // 过滤完.的二进制
   let filterBinary = Binary.replace('.', '');
 
   //获取尾数和舍入位
   let truthValue = filterBinary.substr(filterBinary.indexOf('1') + 1, 68);
-  truthValue = truthValue + Fill(68 - truthValue.length);
+  truthValue = truthValue + fill(68 - truthValue.length);
 
   //获取尾数
   let Mantissa = truthValue.substr(0, 52);
@@ -428,7 +428,7 @@ export function ToIEEE754(value) {
     return Binary.substr(0, len);
   })();
   //舍入后的值
-  const roundValue = ToRound({ Sign, Exponent, Mantissa, Round });
+  const roundValue = toRound({ Sign, Exponent, Mantissa, Round });
   roundValue.Hide = Hide;
 
   return {
@@ -449,31 +449,31 @@ export function sortMiddleware(key) {
   };
 }
 // 原码
-export function ToTrueCode({ value = '', bits = '32' }) {
+export function toTrueCode({ value = '', bits = '32' }) {
   bits--;
   value = `${value}`;
   const Sign = value.indexOf('-') > -1 ? '1' : '0';
   value = value.replace('-', '');
-  value = ToInt(value);
+  value = toInt(value);
   value = value.slice(~bits + 1);
-  value = Fill(bits - value.length) + value;
+  value = fill(bits - value.length) + value;
   return Sign + value;
 }
 // 反码
-export function ToOnesComplementCode(value = '') {
+export function toOnesComplementCode(value = '') {
   const key = ['1', '0'];
   value = value.split('');
   const Sign = value.shift();
   return Sign + value.map((item) => key[item]).join('');
 }
 // 补码
-export function ToComplementCode({ value = '', bits = '32' }) {
-  value = ToTrueCode({ value, bits });
+export function toComplementCode({ value = '', bits = '32' }) {
+  value = toTrueCode({ value, bits });
   if (value[0] === '0') {
     return value;
   }
-  value = ToOnesComplementCode(value);
+  value = toOnesComplementCode(value);
 
-  value = ToAdd(2, value, 1);
+  value = toAdd(2, value, 1);
   return value.slice(~bits + 1);
 }

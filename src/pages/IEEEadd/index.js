@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useRef } from 'react';
 import { Input, Button, Steps } from 'antd';
 import IEEE754 from '@/coms/ieee754';
-import { ToIEEE754, ToAdd, ToRound, sortMiddleware, Fill } from '@/utils';
+import { toIEEE754, toAdd, toRound, sortMiddleware, fill } from '@/utils';
 import './index.css';
 
 const { Step } = Steps;
@@ -9,19 +9,19 @@ const { Search } = Input;
 const steps = [
   {
     title: '阶码对阶',
-    content: 'First-content'
+    description: '大阶不变，小阶向大阶对齐。'
   },
   {
     title: '尾数相加',
-    content: 'Second-content'
+    description: '尾数通过加法器运算得出结果。'
   },
   {
     title: '规格化',
-    content: 'Last-content'
+    description: '计算后的尾数需要把 . 移动到第一个1后面，左移一位阶码 +1，右移一位，阶码 -1。'
   },
   {
     title: '舍入',
-    content: 'Last-content'
+    description: '根据四舍六入五取偶原则进行舍入操作。'
   }
 ];
 function getTotal() {
@@ -43,7 +43,7 @@ export default () => {
   const enCode = (value) => {
     let arr = value.split(',').map((item) => {
       CURRENT.current = [];
-      const o = ToIEEE754(item);
+      const o = toIEEE754(item);
       return {
         key: Math.random(),
         Sign: o.Sign,
@@ -87,14 +87,14 @@ export default () => {
     1: () => {
       if (progress !== 1) return false;
       const t = CURRENT.current.reduce((total, item) => {
-        return ToAdd(2, total, item.Hide + item.Mantissa + item.Round);
+        return toAdd(2, total, item.Hide + item.Mantissa + item.Round);
       }, 0);
       let [left, right] = t.split('.');
       let Mantissa = right.slice(0, 52);
       setTotal({
         ...total,
         Hide: `${left}.`,
-        Mantissa: Mantissa + Fill(52 - Mantissa.length),
+        Mantissa: Mantissa + fill(52 - Mantissa.length),
         Round: right.slice(52)
       });
       setNone({ Sign: true, Exponent: true, Hide: true, Mantissa: true, Round: true });
@@ -108,9 +108,9 @@ export default () => {
       let [left, rigth] = all.split('.');
       // 获得阶码要加的数值
       let len = left.length - 1;
-      let Exponent = ToAdd(2, total.Exponent, len.toString(2));
+      let Exponent = toAdd(2, total.Exponent, len.toString(2));
       // 得到阶码
-      Exponent = Fill(11 - Exponent.length) + Exponent;
+      Exponent = fill(11 - Exponent.length) + Exponent;
       // left的第一位肯定是1，所致直接去后面所有的值和 right 拼接就好了
       // 然后和 right 拼接成隐藏位 + 尾数 + 舍入位
       all = left.slice(1) + rigth;
@@ -125,7 +125,7 @@ export default () => {
     },
     3: () => {
       if (progress !== 3) return false;
-      const { Exponent, Mantissa } = ToRound(total);
+      const { Exponent, Mantissa } = toRound(total);
       setTotal({
         ...total,
         Exponent,
@@ -149,7 +149,7 @@ export default () => {
         <div className="page3-btn-box">
           <Steps current={progress}>
             {steps.map((item) => (
-              <Step key={item.title} title={item.title} />
+              <Step key={item.title} description={item.description} title={item.title} />
             ))}
           </Steps>
           <div style={{ height: '20px' }}></div>

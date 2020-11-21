@@ -1,12 +1,13 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
+import { routerList } from './router';
 import './App.css';
 
 import { Radio } from 'antd';
 
 function App(props) {
   let { location, push } = useHistory();
-  const page = location.pathname == '/' ? '/page1' : location.pathname;
+  const page = location.pathname == '/' ? routerList[0].path : location.pathname;
   const change = (e) => {
     push(e.target.value);
   };
@@ -14,10 +15,11 @@ function App(props) {
     <div className="App">
       <div className="center">
         <Radio.Group defaultValue={page} buttonStyle="solid" onChange={change}>
-          <Radio.Button value="/page1">原码 & 补码</Radio.Button>
-          <Radio.Button value="/page2">10进制转IEEE754</Radio.Button>
-          <Radio.Button value="/page3">IEEE754加法运算</Radio.Button>
-          <Radio.Button value="/page4">IEEE754转10进制</Radio.Button>
+          {routerList.map((item) => (
+            <Radio.Button value={item.path} key={item.path}>
+              {item.title}
+            </Radio.Button>
+          ))}
         </Radio.Group>
       </div>
       <div>{props.children}</div>

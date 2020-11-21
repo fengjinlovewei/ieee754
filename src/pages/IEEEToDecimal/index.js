@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Input, List, Button } from 'antd';
 import IEEE754 from '@/coms/ieee754';
-import { IEEE754ToDecimal, isSpecialValue } from '@/utils';
+import { ieee754ToDecimal, isSpecialValue } from '@/utils';
 import './index.css';
 
 export default () => {
@@ -23,7 +23,7 @@ export default () => {
       if (Special) {
         return { ...Special.roundValue };
       }
-      const { BinaryTruthValue, DecimalTruthValue } = IEEE754ToDecimal({
+      const { BinaryTruthValue, DecimalTruthValue } = ieee754ToDecimal({
         Sign,
         Exponent,
         Mantissa

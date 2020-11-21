@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Input, List } from 'antd';
 import IEEE754 from '@/coms/ieee754';
-import { ToIEEE754 } from '@/utils';
+import { toIEEE754 } from '@/utils';
 import './index.css';
 
 const { Search } = Input;
@@ -9,7 +9,7 @@ export default () => {
   const [bitMap, setBitMap] = useState([]);
 
   const enCode = (value) => {
-    let arr = value.split(',').map((item) => ToIEEE754(item));
+    let arr = value.split(',').map((item) => toIEEE754(item));
     setBitMap(arr);
   };
   const content = (roundValue) => {

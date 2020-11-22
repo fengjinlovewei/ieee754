@@ -3,12 +3,18 @@ import { HashRouter as Router, Route, Switch, Redirect } from 'react-router-dom'
 import CacheRoute, { CacheSwitch } from 'react-router-cache-route';
 
 import App from '../App';
+import DecimalToBinary from '@/pages/decimalToBinary';
 import MachineCode from '@/pages/machineCode';
-import DecimalToIEEE from '@/pages/DecimalToIEEE';
+import DecimalToIEEE from '@/pages/decimalToIEEE';
 import IEEEadd from '@/pages/IEEEadd';
 import IEEEToDecimal from '@/pages/IEEEToDecimal';
 
 export const routerList = [
+  {
+    path: '/decimalToBinary',
+    title: '10进制转2进制',
+    component: DecimalToBinary
+  },
   {
     path: '/machineCode',
     title: '原码 & 补码',

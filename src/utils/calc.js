@@ -155,7 +155,7 @@ export default {
     let num = all.reduce((total, item) => {
       return total + item.value * 10 ** (item.order + Math.abs(min));
     }, 0);
-    return num / 10 ** Math.abs(min);
+    return `${num / 10 ** Math.abs(min)}`;
   },
   //减法
   sub(...arg) {
@@ -164,7 +164,7 @@ export default {
       i === 1 && (total = total.value * 10 ** (total.order + Math.abs(min)));
       return total - item.value * 10 ** (item.order + Math.abs(min));
     });
-    return num / 10 ** Math.abs(min);
+    return `${num / 10 ** Math.abs(min)}`;
   },
   //乘法
   mul(...arg) {
@@ -179,9 +179,9 @@ export default {
       { value: 1, order: 0 }
     );
     if (num.order < 0) {
-      return num.value / 10 ** (~num.order + 1);
+      return `${num.value / 10 ** (~num.order + 1)}`;
     }
-    return num.value * 10 ** num.order;
+    return `${num.value * 10 ** num.order}`;
   },
   //除法
   div(...arg) {
@@ -197,8 +197,8 @@ export default {
       return NumberToFilter(num);
     });
     if (num.order < 0) {
-      return num.value / 10 ** (~num.order + 1);
+      return `${num.value / 10 ** (~num.order + 1)}`;
     }
-    return num.value * 10 ** num.order;
+    return `${num.value * 10 ** num.order}`;
   }
 };

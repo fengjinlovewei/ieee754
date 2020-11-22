@@ -2,6 +2,8 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { routerList } from './router';
 import './App.css';
+import './style/base.css';
+import './style/common.css';
 
 import { Radio } from 'antd';
 

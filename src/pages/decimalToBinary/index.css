@@ -1,0 +1,40 @@
+.search-box {
+  width: 400px;
+  margin: 20px 0;
+}
+
+.list-item {
+  min-height: 26px;
+  padding: 0 20px !important;
+  line-height: 26px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #000;
+}
+.list-item-lable {
+  font-size: 14px;
+  font-weight: 400;
+  color: #333;
+}
+.line-box {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+}
+.line-line {
+  width: 1px;
+  margin: 0 30px;
+}
+.int-left-box {
+}
+.int-right-box {
+}
+.int-right-item {
+  display: flex;
+  align-items: center;
+}
+.int-right-dividend {
+  padding: 5px 10px;
+  border-left: 1px solid #999;
+  border-bottom: 1px solid #999;
+}

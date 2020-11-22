@@ -1,4 +1,9 @@
-import Calc, { NumberToFilter, removeAfterZero, NumberToString } from '@/utils/calc';
+import Calc, {
+  NumberToFilter,
+  removeAfterZero,
+  NumberToString,
+  removeBeforeZero
+} from '@/utils/calc';
 
 //0.0000000000000000000000001
 //console.log(NumberToString(5e-324));
@@ -142,12 +147,19 @@ export function fill(length, value = 0) {
   return ''.padEnd(length, value);
 }
 //10进制整数转化2进制
-export function toInt(int) {
+export function toInt(int, list) {
   if (!int) return 0;
+  int = `${int}`;
   if (int < 2) {
+    list &&
+      list.push({
+        dividend: int,
+        key: int,
+        quotient: 0,
+        remainder: +int
+      });
     return int;
   }
-  int = `${int}`;
   const intArr = int.split('');
   let tip = 0,
     str = '';
@@ -158,20 +170,28 @@ export function toInt(int) {
     tip = a === b ? 0 : 1;
     str += b;
   }
-  return '' + toInt(+str) + tip;
+  str = removeBeforeZero(str);
+  list &&
+    list.push({
+      dividend: int,
+      key: int,
+      quotient: str,
+      remainder: tip
+    });
+  return '' + toInt(str, list) + tip;
 }
 //10进制小数转化2进制
 //注意：返回值以.开头，而不是0.
 //这个点有用，作为分隔符
-export function toFloat(float, length = 1024) {
+export function toFloat(float, list) {
   let floatStr = '.';
   if (!float) return floatStr;
-  for (let i = 0; i < length; i++) {
+  for (let i = 0; i < 1024; i++) {
     float = Calc.mul(float, 2);
     if (float >= 1) {
       floatStr += 1;
       if (float === 1) break;
-      float = Calc.sub(float, 1);
+      float = float.replace('1.', '0.');
     } else {
       floatStr += 0;
     }

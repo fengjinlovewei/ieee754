@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { Input, List } from 'antd';
 import IEEE754 from '@/coms/ieee754';
 import { toIEEE754 } from '@/utils';
-import './index.css';
+
+import Style from './index.module.scss';
 
 const { Search } = Input;
 export default () => {
@@ -55,25 +56,25 @@ export default () => {
               }}
             ></IEEE754>
           </List.Item>
-          <List.Item className="list-item">
-            <span className="list-item-lable">十进制真值：</span>
+          <List.Item className={Style['list-item']}>
+            <span className={Style['list-item-lable']}>十进制真值：</span>
             {DecimalTruthValue}
           </List.Item>
-          <List.Item className="list-item">
-            <span className="list-item-lable">舍入十进制：</span>
+          <List.Item className={Style['list-item']}>
+            <span className={Style['list-item-lable']}>舍入十进制：</span>
             {roundValue.DecimalTruthValue.truthSign}
             {roundValue.DecimalTruthValue.value}
           </List.Item>
-          <List.Item className="list-item">
-            <span className="list-item-lable">二进制真值：</span>
+          <List.Item className={Style['list-item']}>
+            <span className={Style['list-item-lable']}>二进制真值：</span>
             {BinaryTruthValue}
           </List.Item>
-          <List.Item className="list-item">
-            <span className="list-item-lable">舍入二进制：</span>
+          <List.Item className={Style['list-item']}>
+            <span className={Style['list-item-lable']}>舍入二进制：</span>
             {roundValue.DecimalTruthValue.truthSign}
             {roundValue.BinaryTruthValue}
           </List.Item>
-          <List.Item className="list-item">{content(roundValue)}</List.Item>
+          <List.Item className={Style['list-item']}>{content(roundValue)}</List.Item>
         </List>
       </div>
     );
@@ -81,7 +82,7 @@ export default () => {
   return (
     <div>
       <div className="center">
-        <div className="search-box">
+        <div className={Style['search-box']}>
           <Search placeholder="输入10进制，多个用逗号分割" enterButton="编码" onSearch={enCode} />
         </div>
       </div>

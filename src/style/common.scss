@@ -1,0 +1,26 @@
+@import '~antd/dist/antd.css';
+
+.none {
+  display: none !important;
+}
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.user {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.bit-item {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  font-size: 26px;
+  text-align: center;
+  border-right: 2px solid #fff;
+  margin-bottom: 5px;
+}

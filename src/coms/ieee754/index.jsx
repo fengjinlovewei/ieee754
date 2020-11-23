@@ -2,7 +2,8 @@ import React, { useState, useCallback, useEffect } from 'react';
 import Bit from '@/coms/bit';
 import Move from '@/coms/move';
 import { fill } from '@/utils';
-import './index.css';
+
+import Style from './index.module.scss';
 
 export default (props) => {
   let { data = {}, move = false, none = {}, newData = () => {} } = props;
@@ -47,8 +48,8 @@ export default (props) => {
     }
   }, [exp]);
   return (
-    <div className={`bit-box ${move && 'user'}`}>
-      <div className="bit-line">
+    <div className={`${Style['bit-box']} ${move && 'user'}`}>
+      <div className={Style['bit-line']}>
         {Sign && (
           <Bit className={isNone(none.Sign)} type="0">
             {Sign}
@@ -64,8 +65,8 @@ export default (props) => {
           </Move>
         )}
       </div>
-      <div className="bit-line">
-        {hid && <span className={`bit-item bit-tip ${isNone(none.Hide)}`}>{hid}</span>}
+      <div className={Style['bit-line']}>
+        {hid && <span className={`bit-item ${Style['bit-tip']} ${isNone(none.Hide)}`}>{hid}</span>}
         {man &&
           man.split('').map((item, i) => (
             <Bit className={isNone(none.Mantissa)} key={i} type="2">

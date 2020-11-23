@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Input, List, Table } from 'antd';
 import { isNumber, toInt, toFloat } from '@/utils';
-import './index.css';
+
+import Style from './index.module.scss';
 
 const intLeft = [
   {
@@ -95,17 +96,17 @@ export default () => {
   return (
     <div>
       <div className="center">
-        <div className="search-box">
+        <div className={Style['search-box']}>
           <Search placeholder="输入10进制" enterButton="编码" onSearch={enCode} />
         </div>
       </div>
-      <div className="line-box">
+      <div className={Style['line-box']}>
         {intEquation.length != 0 && (
           <>
             <div className="int-left-box">
               <Table columns={intLeft} dataSource={intEquation} pagination={false} size="small" />
             </div>
-            <div className="line-line"></div>
+            <div className={Style['line-line']}></div>
             <div className="int-right-box">
               <Table columns={intRight} dataSource={intEquation} pagination={false} size="small" />
             </div>

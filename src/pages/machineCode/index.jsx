@@ -3,7 +3,7 @@ import { Input, Select, Button, Tag, List, Divider } from 'antd';
 import CommonBits from '@/coms/commonBits';
 import { toTrueCode, toOnesComplementCode, toComplementCode, isNumber } from '@/utils';
 
-import './index.css';
+import Style from './index.module.scss';
 
 const { Option } = Select;
 const options = [
@@ -57,7 +57,7 @@ export default () => {
   return (
     <>
       <div className="center">
-        <div className="search-box1">
+        <div className={Style['search-box']}>
           <Input.Group compact>
             <Select
               mode="multiple"
@@ -107,27 +107,27 @@ export default () => {
                       </Divider>
                       {isPositive ? (
                         <>
-                          <div className="page1-tip">
+                          <div className={Style['line-tip']}>
                             <Tag color="magenta">由于 {inputValue} 为正数，所以补码为它本身：</Tag>
                           </div>
                           <CommonBits value={complementCode}></CommonBits>
                         </>
                       ) : (
                         <>
-                          <div className="page1-tip">
+                          <div className={Style['line-tip']}>
                             <Tag color="magenta">
                               由于 {inputValue} 为负数，所以转化成补码步骤如下：
                             </Tag>
                           </div>
-                          <div className="page1-tip">
+                          <div className={Style['line-tip']}>
                             <Tag color="purple">1. 获得原码</Tag>
                           </div>
                           <CommonBits value={trueCode}></CommonBits>
-                          <div className="page1-tip">
+                          <div className={Style['line-tip']}>
                             <Tag color="purple">2. 各位取反（不包括符号位）</Tag>
                           </div>
                           <CommonBits value={onesComplementCode}></CommonBits>
-                          <div className="page1-tip">
+                          <div className={Style['line-tip']}>
                             <Tag color="purple">3. 然后 + 1</Tag>
                           </div>
                           <CommonBits value={complementCode}></CommonBits>

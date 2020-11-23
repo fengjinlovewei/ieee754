@@ -2,7 +2,8 @@ import React, { useState, useRef } from 'react';
 import { Input, List, Button } from 'antd';
 import IEEE754 from '@/coms/ieee754';
 import { ieee754ToDecimal, isSpecialValue } from '@/utils';
-import './index.css';
+
+import Style from './index.module.scss';
 
 export default () => {
   const [bitMap, setBitMap] = useState([]);
@@ -64,15 +65,15 @@ export default () => {
           <List.Item style={{ flexWrap: 'wrap' }}>
             <IEEE754 data={{ Sign, Exponent, Hide, Mantissa, Round: '' }}></IEEE754>
           </List.Item>
-          <List.Item className="list-item">
-            <span className="list-item-lable">十进制真值：</span>
+          <List.Item className={Style['list-item']}>
+            <span className={Style['list-item-lable']}>十进制真值：</span>
             {DecimalTruthValue.value}
           </List.Item>
-          <List.Item className="list-item">
-            <span className="list-item-lable">二进制真值：</span>
+          <List.Item className={Style['list-item']}>
+            <span className={Style['list-item-lable']}>二进制真值：</span>
             {BinaryTruthValue}
           </List.Item>
-          <List.Item className="list-item">{content(DecimalTruthValue.text)}</List.Item>
+          <List.Item className={Style['list-item']}>{content(DecimalTruthValue.text)}</List.Item>
         </List>
       </div>
     );
@@ -80,7 +81,7 @@ export default () => {
   return (
     <div>
       <div className="center">
-        <div className="search-box4 center">
+        <div className={`${Style['search-box']} center`}>
           <Input.TextArea ref={input} placeholder="输入IEEE754双精度浮点数格式，多个用逗号分割" />
           <Button type="primary" onClick={enCode} style={{ marginLeft: '20px' }}>
             编码

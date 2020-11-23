@@ -2,7 +2,8 @@ import React, { useState, useCallback, useRef } from 'react';
 import { Input, Button, Steps } from 'antd';
 import IEEE754 from '@/coms/ieee754';
 import { toIEEE754, toAdd, toRound, sortMiddleware, fill } from '@/utils';
-import './index.css';
+
+import Style from './index.module.scss';
 
 const { Step } = Steps;
 const { Search } = Input;
@@ -146,7 +147,7 @@ export default () => {
   const matchDom = () => {
     return (
       <div>
-        <div className="page3-btn-box">
+        <div className={Style['btn-box']}>
           <Steps current={progress}>
             {steps.map((item) => (
               <Step key={item.title} description={item.description} title={item.title} />
@@ -154,7 +155,7 @@ export default () => {
           </Steps>
           <div style={{ height: '20px' }}></div>
         </div>
-        <div className="page3-btn-centent">
+        <div className={Style['btn-centent']}>
           {isShow(0) && <IEEE754 data={total} key={Math.random()} none={totalNone}></IEEE754>}
         </div>
       </div>
@@ -163,7 +164,7 @@ export default () => {
   return (
     <div>
       <div className="center">
-        <div className="search-box">
+        <div className={Style['search-box']}>
           <Search
             placeholder="输入至少2个10进制的值，用逗号分割"
             enterButton="编码"

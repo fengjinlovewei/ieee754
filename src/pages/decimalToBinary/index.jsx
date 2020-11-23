@@ -53,7 +53,7 @@ const intRight = [
     align: 'center',
     dataIndex: 'dividend',
     render: (text, record) => (
-      <span className={record.dividend > 1 ? 'int-right-dividend' : ''}>{text}</span>
+      <span className={record.dividend > 1 ? Style['int-right-dividend'] : ''}>{text}</span>
     )
   },
   {

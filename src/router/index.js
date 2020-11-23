@@ -26,7 +26,7 @@ export const routerList = [
     component: DecimalToIEEE
   },
   {
-    path: '/IEEEadd',
+    path: '/IEEEAdd',
     title: 'IEEE754加法运算',
     component: IEEEadd
   },

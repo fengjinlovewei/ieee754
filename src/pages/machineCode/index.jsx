@@ -28,7 +28,8 @@ export default () => {
     const { bits } = option;
     arr = arr.map((value) => {
       const trueCode = toTrueCode({ value, bits }),
-        onesComplementCode = toOnesComplementCode(trueCode),
+        // 传入反码的第一个值需要替换成 0 ，以保证是原真值的绝对值
+        onesComplementCode = toOnesComplementCode(trueCode.replace(/^\d/, '0')),
         complementCode = toComplementCode({ value, bits });
       return { trueCode, onesComplementCode, complementCode };
     });
@@ -120,11 +121,13 @@ export default () => {
                             </Tag>
                           </div>
                           <div className={Style['line-tip']}>
-                            <Tag color="purple">1. 获得原码</Tag>
+                            <Tag color="purple">
+                              1. 获得 | {inputValue} | = {inputValue.replace('-', '')} 的原码
+                            </Tag>
                           </div>
-                          <CommonBits value={trueCode}></CommonBits>
+                          <CommonBits value={trueCode.replace(/^\d/, '0')}></CommonBits>
                           <div className={Style['line-tip']}>
-                            <Tag color="purple">2. 各位取反（不包括符号位）</Tag>
+                            <Tag color="purple">2. 各位取反</Tag>
                           </div>
                           <CommonBits value={onesComplementCode}></CommonBits>
                           <div className={Style['line-tip']}>

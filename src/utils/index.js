@@ -187,14 +187,28 @@ export function toFloat(float, list) {
   let floatStr = '.';
   if (!float) return floatStr;
   for (let i = 0; i < 1024; i++) {
+    // 被乘数
+    const data = { multiplicand: float, key: i };
     float = Calc.mul(float, 2);
     if (float >= 1) {
       floatStr += 1;
-      if (float === 1) break;
+      // 余数
+      data.remainder = '1';
+      if (float == 1) {
+        // 乘积
+        data.product = '0';
+        break;
+      }
       float = float.replace('1.', '0.');
     } else {
+      // 余数
+      data.remainder = '0';
+
       floatStr += 0;
     }
+    // 乘积
+    data.product = float;
+    list && list.push(data);
   }
   return floatStr;
 }
@@ -482,9 +496,10 @@ export function toTrueCode({ value = '', bits = '32' }) {
 // 反码
 export function toOnesComplementCode(value = '') {
   const key = ['1', '0'];
-  value = value.split('');
-  const Sign = value.shift();
-  return Sign + value.map((item) => key[item]).join('');
+  return value
+    .split('')
+    .map((item) => key[item])
+    .join('');
 }
 // 补码
 export function toComplementCode({ value = '', bits = '32' }) {
@@ -492,6 +507,7 @@ export function toComplementCode({ value = '', bits = '32' }) {
   if (value[0] === '0') {
     return value;
   }
+  value = value.replace(/^1/, '0');
   value = toOnesComplementCode(value);
 
   value = toAdd(2, value, 1);

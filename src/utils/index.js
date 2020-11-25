@@ -328,8 +328,8 @@ export function toAdd(base, ...arg) {
     } else {
       totalArr = '0.' + ''.padEnd(h, 0) + totalArr.join('');
     }
-    //去除末尾的 0
-    totalArr = totalArr.replace(/(?<!0)0+$/, '');
+    //去除末尾的 0, 然后再去除末尾的 .
+    totalArr = totalArr.replace(/(?<!0)0+$/, '').replace(/\.$/, '');
   } else {
     totalArr = totalArr.join('');
   }

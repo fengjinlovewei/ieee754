@@ -88,7 +88,8 @@ export default () => {
     1: () => {
       if (progress !== 1) return false;
       const t = CURRENT.current.reduce((total, item) => {
-        return toAdd(2, total, item.Hide + item.Mantissa + item.Round);
+        const num = item.Hide + item.Mantissa + item.Round;
+        return toAdd(2, total, num);
       }, 0);
       let [left, right] = t.split('.');
       let Mantissa = right.slice(0, 52);

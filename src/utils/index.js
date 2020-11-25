@@ -197,6 +197,7 @@ export function toFloat(float, list) {
       if (float == 1) {
         // 乘积
         data.product = '0';
+        list && list.push(data);
         break;
       }
       float = float.replace('1.', '0.');

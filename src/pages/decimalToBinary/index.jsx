@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Input, List, Table } from 'antd';
+import { Input, List, Table, Alert } from 'antd';
 import { isNumber, toInt, toFloat } from '@/utils';
 
 import Style from './index.module.scss';
@@ -91,7 +91,21 @@ const floatRight = [
   {
     title: '伪乘积',
     align: 'center',
-    dataIndex: 'product'
+    dataIndex: 'product',
+    render: (text, record) => {
+      return (
+        <>
+          {record.remainder === '1' && text !== '0' ? (
+            <>
+              <span className={Style['delete']}>{record.remainder}</span>
+              <em>{text.replace('0.', '.')}</em>
+            </>
+          ) : (
+            text
+          )}
+        </>
+      );
+    }
   },
   {
     align: 'center',
@@ -99,7 +113,7 @@ const floatRight = [
     render: () => '········'
   },
   {
-    title: '余数',
+    title: '伪余数',
     align: 'center',
     dataIndex: 'remainder'
   }
@@ -113,6 +127,7 @@ export default () => {
   const [type, setType] = useState(0);
   const enCode = (value) => {
     if (!isNumber(value)) return;
+    value = value.replace('-', '');
     let [int = '', float = ''] = value.split('.');
     let isInt = int && int !== '0';
     let isFloat = float && float !== '0';
@@ -121,13 +136,18 @@ export default () => {
       setIntValue(toInt(int, list));
       setIntEquation(list);
       setType(0);
+    } else {
+      setIntValue('');
+      setIntEquation([]);
     }
     if (isFloat) {
       const list = [];
       setFloatValue(toFloat(`0.${float}`, list));
-      console.log(list);
       setFloatEquation(list);
       setType(1);
+    } else {
+      setFloatValue('');
+      setFloatEquation([]);
     }
     if (isInt && isFloat) {
       setType(2);
@@ -140,6 +160,10 @@ export default () => {
         <div className={Style['search-box']}>
           <Search placeholder="输入10进制" enterButton="编码" onSearch={enCode} />
         </div>
+      </div>
+      <div className={Style['message']}>
+        {intValue !== '' && <Alert message={<div>{intValue}</div>} type="success" />}
+        {floatValue !== '' && <Alert message={<div>0{floatValue}</div>} type="error" />}
       </div>
       <div className={Style['line-box']}>
         {type !== 1 && intEquation.length != 0 && (

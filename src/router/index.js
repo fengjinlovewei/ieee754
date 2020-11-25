@@ -6,7 +6,7 @@ import App from '../App';
 import DecimalToBinary from '@/pages/decimalToBinary';
 import MachineCode from '@/pages/machineCode';
 import DecimalToIEEE from '@/pages/decimalToIEEE';
-import IEEEadd from '@/pages/IEEEadd';
+import IEEEAdd from '@/pages/IEEEAdd';
 import IEEEToDecimal from '@/pages/IEEEToDecimal';
 
 export const routerList = [
@@ -28,7 +28,7 @@ export const routerList = [
   {
     path: '/IEEEAdd',
     title: 'IEEE754加法运算',
-    component: IEEEadd
+    component: IEEEAdd
   },
   {
     path: '/IEEEToDecimal',

@@ -13,5 +13,9 @@ export default (props) => {
       4: 'bit-z2'
     }[type];
   };
-  return <span className={`bit-item ${Style[maps(type)]} ${className}`}>{children}</span>;
+  return (
+    <span className={`bit-item ${Style[maps(type)]} ${className}`}>
+      <em className={children == 1 ? Style['true'] : Style['false']}>{children}</em>
+    </span>
+  );
 };

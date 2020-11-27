@@ -89,7 +89,7 @@ export default () => {
         </div>
       </div>
       {bitMap.map((item) => (
-        <Line data={item} key={item.DecimalTruthValue}></Line>
+        <Line data={item} key={item.DecimalTruthValue.value}></Line>
       ))}
     </div>
   );

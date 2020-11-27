@@ -6,6 +6,7 @@ import { toTrueCode, toOnesComplementCode, toComplementCode, isNumber } from '@/
 import Style from './index.module.scss';
 
 const { Option } = Select;
+const { Search } = Input;
 const options = [
   { label: '原码', value: 'gold' },
   { label: '补码', value: 'lime' }
@@ -18,9 +19,8 @@ export default () => {
   });
   const [allData, setallData] = useState([]);
   const [inputValue, setInputValue] = useState('');
-  const CURREBT = useRef(null);
-  const enCode = () => {
-    const str = CURREBT.current.state.value || '';
+  const enCode = (value) => {
+    const str = value || '';
     let arr = str.split(',');
     if (isNumber()) {
     }
@@ -59,28 +59,28 @@ export default () => {
     <>
       <div className="center">
         <div className={Style['search-box']}>
-          <Input.Group compact>
-            <Select
-              mode="multiple"
-              showArrow
-              tagRender={tagRender}
-              defaultValue={option.type}
-              style={{ width: '150px' }}
-              options={options}
-              onChange={typeFn}
-              placeholder="选择编码类型"
-            ></Select>
-            <Select defaultValue={option.bits} onChange={bitsFn}>
-              <Option value="32">32位</Option>
-              <Option value="64">64位</Option>
-            </Select>
-          </Input.Group>
-          <div style={{ flex: 1 }}>
-            <Input placeholder="请输入10进制的值" ref={CURREBT} style={{ width: '290px' }} />
+          <div className={Style['search-box-select']}>
+            <Input.Group compact>
+              <Select
+                mode="multiple"
+                showArrow
+                tagRender={tagRender}
+                defaultValue={option.type}
+                style={{ width: '150px' }}
+                options={options}
+                onChange={typeFn}
+                placeholder="选择编码类型"
+              ></Select>
+              <Select defaultValue={option.bits} onChange={bitsFn}>
+                <Option value="32">32位</Option>
+                <Option value="64">64位</Option>
+              </Select>
+            </Input.Group>
           </div>
-          <Button type="primary" onClick={enCode}>
-            编码
-          </Button>
+
+          <div className={Style['search-box-info']}>
+            <Search placeholder="请输入10进制的整数值" enterButton="编码" onSearch={enCode} />
+          </div>
         </div>
       </div>
       <div>

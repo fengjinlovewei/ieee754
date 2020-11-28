@@ -12,6 +12,8 @@ import Calc, {
 //console.log(binaryToDecimal('0.010011001100110011001100110011001100110011001100110100'))
 //console.log(toFloat('0.000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005'));
 //特殊值常量
+console.log(toIndex(2, 80));
+console.log(toInt('1180591620717411300000'));
 const SpecialValue = (() => {
   const Z_11_0 = fill(11),
     Z_11_1 = fill(11, 1),
@@ -220,6 +222,27 @@ export function toBinary(num) {
   let floatStr = float ? toFloat(`0.${float}`) : '.';
   return intStr + floatStr;
 }
+// 求指数运算
+export function toIndex(x, y) {
+  // 假设： x = 3, y = 80
+  // 保险起见，取 2 的52次方
+  const e = 2 ** 52,
+    // 利用换低公式求出 log 3 f = e；f = 32
+    max = (Math.log(e) / Math.log(x)) >> 0,
+    len = (y / max) >> 0,
+    rem = y % max,
+    arr = Array(len).fill(max);
+  arr.push(rem);
+  // arr = [32,32,16]
+  const c = arr.shift();
+  let total = x ** c;
+  for (let item of arr) {
+    for (let i = 0; i < item; i++) {
+      total = toAdd(10, ...Array(+x).fill(total));
+    }
+  }
+  return total;
+}
 //二进制转化10进制
 export function binaryToDecimal(value) {
   value = `${value}`;
@@ -240,7 +263,8 @@ export function binaryToDecimal(value) {
             size: size - i
           }
         ],
-        value: toAdd(10, total.value, item === '1' ? `${2 ** (size - i)}` : '0')
+        //value: toAdd(10, total.value, item === '1' ? `${2 ** (size - i)}` : '0')
+        value: toAdd(10, total.value, item === '1' ? `${toIndex(2, size - i)}` : '0')
       };
     }, clone());
   } else {
@@ -414,6 +438,7 @@ export function toRound({ Sign, Exponent, Mantissa, Round }) {
 }
 //转化成IEEE754格式总函数
 export function toIEEE754(value) {
+  debugger;
   value = `${value}`;
   if (SpecialValue.has(value)) return SpecialValue.get(value);
   if (!isNumber(value)) {

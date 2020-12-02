@@ -438,7 +438,6 @@ export function toRound({ Sign, Exponent, Mantissa, Round }) {
 }
 //转化成IEEE754格式总函数
 export function toIEEE754(value) {
-  debugger;
   value = `${value}`;
   if (SpecialValue.has(value)) return SpecialValue.get(value);
   if (!isNumber(value)) {

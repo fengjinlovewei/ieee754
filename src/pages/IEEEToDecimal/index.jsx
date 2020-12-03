@@ -67,13 +67,16 @@ export default () => {
           </List.Item>
           <List.Item className={Style['list-item']}>
             <span className={Style['list-item-lable']}>十进制真值：</span>
-            {DecimalTruthValue.value}
+            <div className={Style['list-item-text']}> {DecimalTruthValue.value}</div>
           </List.Item>
           <List.Item className={Style['list-item']}>
             <span className={Style['list-item-lable']}>二进制真值：</span>
-            {BinaryTruthValue}
+            <div className={Style['list-item-text']}>{BinaryTruthValue}</div>
           </List.Item>
-          <List.Item className={Style['list-item']}>{content(DecimalTruthValue.text)}</List.Item>
+          <List.Item className={Style['list-item']}>
+            <span className={Style['list-item-lable']}>十进制步骤：</span>
+            <div className={Style['list-item-text']}> {content(DecimalTruthValue.text)}</div>
+          </List.Item>
         </List>
       </div>
     );

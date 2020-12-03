@@ -1,18 +1,25 @@
-.search-box{
+.search-box {
   width: 400px;
   margin: 20px 0;
 }
 
-.list-item{
+.list-item {
   min-height: 26px;
   padding: 0 20px !important;
   line-height: 26px;
   font-size: 18px;
   font-weight: 600;
   color: #000;
+  align-items: flex-start;
 }
-.list-item-lable{
+.list-item-lable {
   font-size: 14px;
   font-weight: 400;
   color: #333;
+}
+.list-item-text {
+  flex: 1;
+  min-width: 0;
+  word-wrap: break-word;
+  word-break: break-all;
 }

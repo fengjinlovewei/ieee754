@@ -58,23 +58,30 @@ export default () => {
           </List.Item>
           <List.Item className={Style['list-item']}>
             <span className={Style['list-item-lable']}>十进制真值：</span>
-            {DecimalTruthValue}
+            <div className={Style['list-item-text']}>{DecimalTruthValue}</div>
           </List.Item>
           <List.Item className={Style['list-item']}>
             <span className={Style['list-item-lable']}>舍入十进制：</span>
-            {roundValue.DecimalTruthValue.truthSign}
-            {roundValue.DecimalTruthValue.value}
+            <div className={Style['list-item-text']}>
+              {roundValue.DecimalTruthValue.truthSign}
+              {roundValue.DecimalTruthValue.value}
+            </div>
           </List.Item>
           <List.Item className={Style['list-item']}>
             <span className={Style['list-item-lable']}>二进制真值：</span>
-            {BinaryTruthValue}
+            <div className={Style['list-item-text']}>{BinaryTruthValue}</div>
           </List.Item>
           <List.Item className={Style['list-item']}>
             <span className={Style['list-item-lable']}>舍入二进制：</span>
-            {roundValue.DecimalTruthValue.truthSign}
-            {roundValue.BinaryTruthValue}
+            <div className={Style['list-item-text']}>
+              {roundValue.DecimalTruthValue.truthSign}
+              {roundValue.BinaryTruthValue}
+            </div>
           </List.Item>
-          <List.Item className={Style['list-item']}>{content(roundValue)}</List.Item>
+          <List.Item className={Style['list-item']}>
+            <span className={Style['list-item-lable']}>十进制步骤：</span>
+            <div className={Style['list-item-text']}>{content(roundValue)}</div>
+          </List.Item>
         </List>
       </div>
     );

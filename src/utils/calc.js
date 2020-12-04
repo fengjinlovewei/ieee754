@@ -6,7 +6,12 @@ export function removeBeforeZero(value) {
 export function removeAfterZero(value) {
   if (!value) return '0';
   value = `${value}`;
-  return value.replace(/\.(0+)?$/, '');
+  value = value.replace(/\.(0+)?$/, '');
+  debugger;
+  if (value.indexOf('.')) {
+    value = value.replace(/(?<!0)0+$/, '');
+  }
+  return value;
 }
 export function NumberWithReg(s) {
   return [

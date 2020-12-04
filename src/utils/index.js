@@ -461,7 +461,6 @@ export function toIEEE754(value) {
 
   //去掉真值的符号
   let DecimalTruthValue = (value = value.replace('-', ''));
-  debugger;
   //得到二进制编码
   let Binary = toBinary(value);
 

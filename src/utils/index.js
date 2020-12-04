@@ -150,7 +150,7 @@ export function fill(length, value = 0) {
 }
 //10进制整数转化2进制
 export function toInt(int, list) {
-  if (!int) return 0;
+  if (!int) return '0';
   int = `${int}`;
   if (int < 2) {
     list &&
@@ -188,10 +188,12 @@ export function toInt(int, list) {
 export function toFloat(float, list) {
   let floatStr = '.';
   if (!float) return floatStr;
-  for (let i = 0; i < 1024; i++) {
+  // -1022 - 52
+  for (let i = 0; i < 1074; i++) {
     // 被乘数
     const data = { multiplicand: float, key: i };
-    float = Calc.mul(float, 2);
+    //float = Calc.mul(float, 2);
+    float = toAdd(10, float, float);
     if (float >= 1) {
       floatStr += 1;
       // 余数
@@ -385,7 +387,12 @@ export function ieee754ToDecimal({ Sign, Exponent, Mantissa }) {
   let BinaryTruthValue, DecimalTruthValue;
   Exponent = binaryToDecimal(Exponent).value - 1023;
   //补上隐藏的1.
-  Mantissa = (1 + Mantissa).split('');
+  //但是，当指数为全0，尾数部位全0时，隐藏位为0.
+  if (Exponent <= -1023 && +Mantissa != 0) {
+    Mantissa = Mantissa.split('');
+  } else {
+    Mantissa = (1 + Mantissa).split('');
+  }
   if (Exponent >= 0) {
     //得到二进制真值
     if (Exponent > 52) {
@@ -454,8 +461,13 @@ export function toIEEE754(value) {
 
   //去掉真值的符号
   let DecimalTruthValue = (value = value.replace('-', ''));
+  debugger;
   //得到二进制编码
   let Binary = toBinary(value);
+
+  if (Binary.indexOf('1') < 0) {
+    return SpecialValue.get(truthSign + '0');
+  }
 
   //找第一个1，和第一个.得到指数真值
   let exponentTruthValue = Binary.indexOf('.') - Binary.indexOf('1');
@@ -464,16 +476,24 @@ export function toIEEE754(value) {
     exponentTruthValue--;
   }
   //得到编码后的指数
-  let Exponent = toInt(exponentTruthValue + 1023);
+  //这里就是为了处理极限小数做的兼容！！
+  const zhi = exponentTruthValue + 1023;
+  let Exponent = toInt(Math.max(zhi, 0));
   Exponent = fill(11 - Exponent.length) + Exponent;
 
   // 过滤完.的二进制
   let filterBinary = Binary.replace('.', '');
 
   //获取尾数和舍入位
-  let truthValue = filterBinary.substr(filterBinary.indexOf('1') + 1, 68);
+  let truthValue;
+  if (zhi > 0) {
+    truthValue = filterBinary.substr(filterBinary.indexOf('1') + 1, 68);
+  } else {
+    Hide = '0.';
+    //zhi = ~zhi + 2;
+    truthValue = filterBinary.substr(1023, 52);
+  }
   truthValue = truthValue + fill(68 - truthValue.length);
-
   //获取尾数
   let Mantissa = truthValue.substr(0, 52);
 

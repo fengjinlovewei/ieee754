@@ -24,15 +24,18 @@ export default () => {
       if (Special) {
         return { ...Special.roundValue };
       }
+      debugger;
+      const Hide = Exponent == 0 ? '0.' : '1.';
       const { BinaryTruthValue, DecimalTruthValue } = ieee754ToDecimal({
         Sign,
         Exponent,
         Mantissa
       });
+
       return {
         Sign,
         Exponent,
-        Hide: '1.',
+        Hide,
         Mantissa,
         BinaryTruthValue,
         DecimalTruthValue

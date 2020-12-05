@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Input, List } from 'antd';
 import IEEE754 from '@/coms/ieee754';
+import Formula from '@/coms/formula';
 import { toIEEE754 } from '@/utils';
 
 import Style from './index.module.scss';
@@ -14,20 +15,55 @@ export default () => {
     setBitMap(arr);
   };
   const content = (roundValue) => {
-    let { DecimalTruthValue } = roundValue;
-    if (!DecimalTruthValue.text) return null;
+    console.log(roundValue);
+    let { Sign, Exponent, Hide, Mantissa } = roundValue;
+    Exponent = parseInt(Exponent, 2) - 1023;
+    Exponent = Math.max(Exponent, -1022);
     return (
-      <div>
-        {DecimalTruthValue.text.map((item, i) => {
+      <div className={Style['formula-box']}>
+        <span>
+          -1<sup>{Sign}</sup>
+        </span>
+        <i>x</i>
+        <span>
+          2<sup>{Exponent}</sup>
+        </span>
+        <i>x</i>
+        <i>(</i>
+        <span>{+Hide}</span>
+        <i>+</i>
+        {Mantissa.split('').map((item, i) => {
           return (
-            <span style={{ display: 'inline-block' }} key={item.size}>
-              {i !== 0 && ` + `}
-              {item.item}x2<sup>{item.size}</sup>
-            </span>
+            <div key={i}>
+              <em>{item}</em>
+              <i>x</i>
+              <div>
+                <span>1</span>
+                <span>——</span>
+                <span>
+                  2<sup>{~i}</sup>
+                </span>
+              </div>
+            </div>
           );
         })}
+        <i>)</i>
       </div>
     );
+    // let { DecimalTruthValue } = roundValue;
+    // if (!DecimalTruthValue.text) return null;
+    // return (
+    //   <div>
+    //     {DecimalTruthValue.text.map((item, i) => {
+    //       return (
+    //         <span style={{ display: 'inline-block' }} key={item.size}>
+    //           {i !== 0 && ` + `}
+    //           {item.item}x2<sup>{item.size}</sup>
+    //         </span>
+    //       );
+    //     })}
+    //   </div>
+    // );
   };
   const Line = (porps) => {
     let {
@@ -80,7 +116,9 @@ export default () => {
           </List.Item>
           <List.Item className={Style['list-item']}>
             <span className={Style['list-item-lable']}>十进制步骤：</span>
-            <div className={Style['list-item-text']}>{content(roundValue)}</div>
+            <div className={Style['list-item-text']}>
+              <Formula data={roundValue}></Formula>
+            </div>
           </List.Item>
         </List>
       </div>

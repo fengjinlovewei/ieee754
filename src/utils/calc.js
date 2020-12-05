@@ -7,8 +7,7 @@ export function removeAfterZero(value) {
   if (!value) return '0';
   value = `${value}`;
   value = value.replace(/\.(0+)?$/, '');
-  debugger;
-  if (value.indexOf('.')) {
+  if (value.indexOf('.') > -1) {
     value = value.replace(/(?<!0)0+$/, '');
   }
   return value;

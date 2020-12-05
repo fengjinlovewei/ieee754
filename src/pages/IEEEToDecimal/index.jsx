@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Input, List, Button } from 'antd';
 import IEEE754 from '@/coms/ieee754';
+import Formula from '@/coms/formula';
 import { ieee754ToDecimal, isSpecialValue } from '@/utils';
 
 import Style from './index.module.scss';
@@ -77,7 +78,10 @@ export default () => {
           </List.Item>
           <List.Item className={Style['list-item']}>
             <span className={Style['list-item-lable']}>十进制步骤：</span>
-            <div className={Style['list-item-text']}> {content(DecimalTruthValue.text)}</div>
+            <div className={Style['list-item-text']}>
+              <Formula data={{ Sign, Exponent, Hide, Mantissa }}></Formula>
+              {content(DecimalTruthValue.text)}
+            </div>
           </List.Item>
         </List>
       </div>

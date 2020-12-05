@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useRef } from 'react';
-import { Input, Button, Steps } from 'antd';
+import { Input, Button, Steps, notification } from 'antd';
 import IEEE754 from '@/coms/ieee754';
-import { toIEEE754, toAdd, toRound, sortMiddleware, fill } from '@/utils';
+import { toIEEE754, toAdd, toRound, sortMiddleware, fill, SpecialValue } from '@/utils';
 
 import Style from './index.module.scss';
 
@@ -21,8 +21,12 @@ const steps = [
     description: '计算后的尾数需要把 . 移动到第一个1后面，左移一位阶码 +1，右移一位，阶码 -1。'
   },
   {
-    title: '舍入',
+    title: '尾数舍入',
     description: '根据四舍六入五取偶原则进行舍入操作。'
+  },
+  {
+    title: '溢出判断',
+    description: '如果指数达到2047，则向无穷舍入；如果指数小于0，则向0舍入；'
   }
 ];
 function getTotal() {
@@ -42,16 +46,28 @@ export default () => {
   const [progress, setProgress] = useState(0);
   const CURRENT = useRef([]);
   const enCode = (value) => {
-    let arr = value.split(',').map((item) => {
-      CURRENT.current = [];
-      const o = toIEEE754(item);
-      return {
-        key: Math.random(),
-        Sign: o.Sign,
-        ...o.roundValue,
-        Round: ''
-      };
-    });
+    try {
+      var arr = value.split(',').map((item) => {
+        CURRENT.current = [];
+        const o = toIEEE754(item);
+        if (o === false) {
+          notification.error({
+            key: 'notNumber',
+            message: '不是数字!',
+            duration: 2.5
+          });
+          throw new Error('不是数字格式，中断操作！');
+        }
+        return {
+          key: Math.random(),
+          Sign: o.Sign,
+          ...o.roundValue,
+          Round: ''
+        };
+      });
+    } catch (e) {
+      return;
+    }
     const data = [...arr];
     data.sort(sortMiddleware('Exponent'));
     const { Sign, Exponent } = data[0];
@@ -76,7 +92,12 @@ export default () => {
     0: () => {
       const bool = CURRENT.current.every((item) => item.Exponent === total.Exponent);
       if (!bool) {
-        alert('对阶错误！');
+        notification.error({
+          key: 'duijie',
+          message: '对阶错误!',
+          description: '向右拖动小阶部分，使其与大阶相同。',
+          duration: 2.5
+        });
         return false;
       }
       setProgress(1);
@@ -125,6 +146,7 @@ export default () => {
       });
       return true;
     },
+    //尾数舍入
     3: () => {
       if (progress !== 3) return false;
       const { Exponent, Mantissa } = toRound(total);
@@ -135,6 +157,29 @@ export default () => {
         Mantissa,
         Round: ''
       });
+      return true;
+    },
+    //溢出判断
+    4: () => {
+      if (progress !== 4) return false;
+      const { Sign, Exponent, Mantissa } = total;
+      let message = '';
+      if (Exponent === '11111111111') {
+        setTotal(SpecialValue.get(`Infinity`));
+        message = '指数向上溢出！以舍入至无穷';
+      }
+      if (+Exponent === 0 && +Mantissa === 0) {
+        setTotal(SpecialValue.get(`0`));
+        message = '指数向下溢出！以舍入至0';
+      }
+      if (message) {
+        notification.error({
+          key: 'zhishuyichu',
+          message,
+          duration: 0
+        });
+      }
+      return true;
     }
   };
   const next = () => {

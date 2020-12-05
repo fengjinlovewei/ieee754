@@ -14,57 +14,6 @@ export default () => {
     let arr = value.split(',').map((item) => toIEEE754(item));
     setBitMap(arr);
   };
-  const content = (roundValue) => {
-    console.log(roundValue);
-    let { Sign, Exponent, Hide, Mantissa } = roundValue;
-    Exponent = parseInt(Exponent, 2) - 1023;
-    Exponent = Math.max(Exponent, -1022);
-    return (
-      <div className={Style['formula-box']}>
-        <span>
-          -1<sup>{Sign}</sup>
-        </span>
-        <i>x</i>
-        <span>
-          2<sup>{Exponent}</sup>
-        </span>
-        <i>x</i>
-        <i>(</i>
-        <span>{+Hide}</span>
-        <i>+</i>
-        {Mantissa.split('').map((item, i) => {
-          return (
-            <div key={i}>
-              <em>{item}</em>
-              <i>x</i>
-              <div>
-                <span>1</span>
-                <span>——</span>
-                <span>
-                  2<sup>{~i}</sup>
-                </span>
-              </div>
-            </div>
-          );
-        })}
-        <i>)</i>
-      </div>
-    );
-    // let { DecimalTruthValue } = roundValue;
-    // if (!DecimalTruthValue.text) return null;
-    // return (
-    //   <div>
-    //     {DecimalTruthValue.text.map((item, i) => {
-    //       return (
-    //         <span style={{ display: 'inline-block' }} key={item.size}>
-    //           {i !== 0 && ` + `}
-    //           {item.item}x2<sup>{item.size}</sup>
-    //         </span>
-    //       );
-    //     })}
-    //   </div>
-    // );
-  };
   const Line = (porps) => {
     let {
       Sign,

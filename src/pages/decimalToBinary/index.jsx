@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Input, List, Table, Alert } from 'antd';
+import { Input, Table, Alert } from 'antd';
 import { isNumber, toInt, toFloat } from '@/utils';
 
 import Style from './index.module.scss';
@@ -152,7 +152,6 @@ export default () => {
     if (isInt && isFloat) {
       setType(2);
     }
-    console.log(intEquation);
   };
   return (
     <div>

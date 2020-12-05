@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Input, List, Button } from 'antd';
+import { Input, List, Button, notification } from 'antd';
 import IEEE754 from '@/coms/ieee754';
 import Formula from '@/coms/formula';
 import { ieee754ToDecimal, isSpecialValue } from '@/utils';
@@ -19,7 +19,7 @@ export default () => {
     const Sign = iee754.slice(0, 1);
     const Exponent = iee754.slice(1, 12);
     const Mantissa = iee754.slice(12);
-    if (reg.test(iee754) && Exponent < 11111111111) {
+    if (reg.test(iee754) && Exponent <= 11111111111) {
       //查看是否是特殊值
       let Special = isSpecialValue({ Sign, Exponent, Mantissa });
       if (Special) {
@@ -41,24 +41,12 @@ export default () => {
         DecimalTruthValue
       };
     } else {
-      alert('格式错误！');
-      throw new Error('格式错误！');
+      notification.error({
+        key: 'ieee754tod',
+        message: '格式错误！',
+        duration: 0
+      });
     }
-  };
-  const content = (text) => {
-    if (!text) return null;
-    return (
-      <div>
-        {text.map((item, i) => {
-          return (
-            <span style={{ display: 'inline-block' }} key={item.size}>
-              {i !== 0 && ` + `}
-              {item.item}x2<sup>{item.size}</sup>
-            </span>
-          );
-        })}
-      </div>
-    );
   };
   const Line = (porps) => {
     let { Sign, Exponent, Hide, Mantissa, DecimalTruthValue, BinaryTruthValue } = porps.data;
@@ -80,7 +68,6 @@ export default () => {
             <span className={Style['list-item-lable']}>十进制步骤：</span>
             <div className={Style['list-item-text']}>
               <Formula data={{ Sign, Exponent, Hide, Mantissa }}></Formula>
-              {content(DecimalTruthValue.text)}
             </div>
           </List.Item>
         </List>

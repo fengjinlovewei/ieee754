@@ -1,23 +1,26 @@
 import React from 'react';
 import Style from './index.module.scss';
 import { Button, notification } from 'antd';
+import { isSpecialValue } from '@/utils';
 
 import Ieee754formula from '@/static/images/ieee754formula.png';
 
 export default (props) => {
-  console.log(props);
   let { Sign, Exponent, Hide, Mantissa } = props.data;
+  //查看是否是特殊值
+  let Special = isSpecialValue({ Sign, Exponent, Mantissa });
+  if (Special) return Special.DecimalTruthValue;
   Exponent = parseInt(Exponent, 2) - 1023;
   Exponent = Math.max(Exponent, -1022);
   const openNotification = () => {
-    const args = {
+    notification.open({
       key: 'Ieee754formula',
       description: <img src={Ieee754formula}></img>,
       duration: 0,
       className: Style['Ieee754formula']
-    };
-    notification.open(args);
+    });
   };
+
   return (
     <div className={Style['formula-box']}>
       <span className={Style['formula-item']}>

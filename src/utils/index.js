@@ -13,9 +13,9 @@ import Calc, {
 //console.log(toFloat('0.000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005'));
 //特殊值常量
 //console.log(toIndex(2, 80));
-console.log(binaryToDecimal('00101110010'));
+//console.log(binaryToDecimal('00101110010'));
 //console.log(binaryToDecimal('00101110110'));
-const SpecialValue = (() => {
+export const SpecialValue = (() => {
   const Z_11_0 = fill(11),
     Z_11_1 = fill(11, 1),
     Z_16_0 = fill(16),
@@ -365,11 +365,11 @@ export function toAdd(base, ...arg) {
 //判断是否为特殊值
 export function isSpecialValue({ Sign, Exponent, Mantissa }) {
   for (let Special of SpecialValue.values()) {
-    if (Sign === Special.Sign && Exponent === Special.Exponent && Mantissa === Special.Exponent) {
+    if (Sign === Special.Sign && Exponent === Special.Exponent && Mantissa === Special.Mantissa) {
       return { ...Special };
     }
-    return false;
   }
+  return false;
 }
 // 判断是否为数字类型
 export function isNumber(value) {
@@ -448,8 +448,9 @@ export function toRound({ Sign, Exponent, Mantissa, Round }) {
 export function toIEEE754(value) {
   value = `${value}`;
   if (SpecialValue.has(value)) return SpecialValue.get(value);
+  // 不符合数字规范，直接返回false
   if (!isNumber(value)) {
-    return alert('必须是数字');
+    return false;
   }
   value = NumberToString(value);
   let Hide = '1.', //隐藏位的值

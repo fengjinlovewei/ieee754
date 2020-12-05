@@ -368,6 +368,9 @@ export function isSpecialValue({ Sign, Exponent, Mantissa }) {
     if (Sign === Special.Sign && Exponent === Special.Exponent && Mantissa === Special.Mantissa) {
       return { ...Special };
     }
+    if (Exponent === '11111111111' && Mantissa.indexOf('1') > -1) {
+      return { ...SpecialValue.get('NaN') };
+    }
   }
   return false;
 }

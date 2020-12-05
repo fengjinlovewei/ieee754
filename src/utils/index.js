@@ -190,7 +190,7 @@ export function toFloat(float, list) {
   let floatStr = '.';
   if (!float) return floatStr;
   // -1022 - 52
-  for (let i = 0; i < 1074; i++) {
+  for (let i = 0; i < 1090; i++) {
     // 被乘数
     const data = { multiplicand: float, key: i };
     //float = Calc.mul(float, 2);
@@ -494,8 +494,8 @@ export function toIEEE754(value) {
     truthValue = filterBinary.substr(filterBinary.indexOf('1') + 1, 68);
   } else {
     Hide = '0.';
-    //zhi = ~zhi + 2;
-    truthValue = filterBinary.substr(1023, 52);
+    //获取-1022 之外的指数;
+    truthValue = filterBinary.substr(1023, 68);
   }
   truthValue = truthValue + fill(68 - truthValue.length);
   //获取尾数

@@ -20,7 +20,6 @@ export default () => {
   });
   const [allData, setallData] = useState([]);
   const verify = (value) => {
-    debugger;
     const { bits, type } = option;
     if (!isNumber(value)) {
       return notification.error({

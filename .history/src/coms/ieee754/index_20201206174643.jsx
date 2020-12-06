@@ -36,6 +36,7 @@ export default (props) => {
   );
   useEffect(() => {
     if (!move) return;
+    debugger;
     //使用新的指数 - 最开始的指数
     let num = parseInt(exp, 2) - parseInt(Exponent, 2);
     if (num > 0) {

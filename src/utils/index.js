@@ -5,16 +5,6 @@ import Calc, {
   removeBeforeZero
 } from '@/utils/calc';
 
-//0.0000000000000000000000001
-//console.log(NumberToString(5e-324));
-//console.log(toAdd(10, '', ''))
-//console.log(NumberToString('2.220446049250313e-16'))
-//console.log(binaryToDecimal('0.010011001100110011001100110011001100110011001100110100'))
-//console.log(toFloat('0.000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005'));
-//特殊值常量
-//console.log(toIndex(2, 80));
-//console.log(binaryToDecimal('00101110010'));
-//console.log(binaryToDecimal('00101110110'));
 export const SpecialValue = (() => {
   const Z_11_0 = fill(11),
     Z_11_1 = fill(11, 1),
@@ -381,11 +371,22 @@ export function isNumber(value) {
 }
 //IEEE754转10进制和2进制
 export function ieee754ToDecimal({ Sign, Exponent, Mantissa }) {
+  if (Sign.length !== 1) {
+    return console.error('符号位不是1位!!');
+  }
   if (Exponent.length !== 11) {
     return console.error('指数不是11位!!');
   }
   if (Mantissa.length !== 52) {
     return console.error('尾数不是52位！！');
+  }
+  //查看是否是特殊值
+  let Special = isSpecialValue({ Sign, Exponent, Mantissa });
+  if (Special) {
+    return {
+      BinaryTruthValue: Special.BinaryTruthValue,
+      DecimalTruthValue: Special.roundValue.DecimalTruthValue
+    };
   }
   let truthSign = Sign === '0' ? '' : '-';
   let BinaryTruthValue, DecimalTruthValue;
@@ -411,7 +412,37 @@ export function ieee754ToDecimal({ Sign, Exponent, Mantissa }) {
   }
   //得到十进制真值
   DecimalTruthValue = binaryToDecimal(truthSign + BinaryTruthValue);
+  BinaryTruthValue = removeAfterZero(BinaryTruthValue);
   return { BinaryTruthValue, DecimalTruthValue };
+}
+//这个方法是ieee754ToDecimal的弟弟，包含了切分字符串功能
+export function ieee754ToDecimalToInput(ieee754) {
+  const reg = /^[01]{64}$/;
+  const Sign = ieee754.slice(0, 1);
+  const Exponent = ieee754.slice(1, 12);
+  const Mantissa = ieee754.slice(12);
+  if (reg.test(ieee754) && Exponent <= 11111111111) {
+    //查看是否是特殊值
+    let Special = isSpecialValue({ Sign, Exponent, Mantissa });
+    if (Special) {
+      return { ...Special.roundValue };
+    }
+    const Hide = +Exponent === 0 ? '0.' : '1.';
+    const { BinaryTruthValue, DecimalTruthValue } = ieee754ToDecimal({
+      Sign,
+      Exponent,
+      Mantissa
+    });
+    return {
+      Sign,
+      Exponent,
+      Hide,
+      Mantissa,
+      BinaryTruthValue,
+      DecimalTruthValue
+    };
+  }
+  return false;
 }
 //舍入函数
 // Exponent, Mantissa, Round 是必须填写的
@@ -444,7 +475,7 @@ export function toRound({ Sign, Exponent, Mantissa, Round }) {
     Mantissa: roundValue.Mantissa
   });
   roundValue.DecimalTruthValue = before.DecimalTruthValue;
-  roundValue.BinaryTruthValue = removeAfterZero(before.BinaryTruthValue);
+  roundValue.BinaryTruthValue = before.BinaryTruthValue;
   return roundValue;
 }
 //转化成IEEE754格式总函数

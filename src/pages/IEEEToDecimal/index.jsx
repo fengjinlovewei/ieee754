@@ -1,8 +1,8 @@
 import React, { useState, useRef } from 'react';
 import { Input, List, Button, notification } from 'antd';
 import IEEE754 from '@/coms/ieee754';
-import Formula from '@/coms/formula';
-import { ieee754ToDecimal, isSpecialValue } from '@/utils';
+import DetailsList from '@/coms/detailsList';
+import { ieee754ToDecimalToInput, isSpecialValue } from '@/utils';
 
 import Style from './index.module.scss';
 
@@ -11,66 +11,37 @@ export default () => {
   const input = useRef(null);
   const enCode = () => {
     let value = input.current.state.value;
-    let arr = value.split(',').map((item) => validation(item));
+    let arr = value
+      .split(',')
+      .map((item) => validation(item))
+      .filter(Boolean);
     setBitMap(arr);
   };
-  const validation = (iee754) => {
-    const reg = /^[01]{64}$/;
-    const Sign = iee754.slice(0, 1);
-    const Exponent = iee754.slice(1, 12);
-    const Mantissa = iee754.slice(12);
-    if (reg.test(iee754) && Exponent <= 11111111111) {
-      //查看是否是特殊值
-      let Special = isSpecialValue({ Sign, Exponent, Mantissa });
-      if (Special) {
-        return { ...Special.roundValue };
-      }
-      const Hide = Exponent == 0 ? '0.' : '1.';
-      const { BinaryTruthValue, DecimalTruthValue } = ieee754ToDecimal({
-        Sign,
-        Exponent,
-        Mantissa
-      });
-
-      return {
-        Sign,
-        Exponent,
-        Hide,
-        Mantissa,
-        BinaryTruthValue,
-        DecimalTruthValue
-      };
-    } else {
+  const validation = (ieee754) => {
+    const data = ieee754ToDecimalToInput(ieee754);
+    if (data === false) {
       notification.error({
-        key: 'ieee754tod',
-        message: '格式错误！',
+        key: ieee754,
+        message: `${ieee754} 是错误的ieee754格式！`,
         duration: 0
       });
     }
+    return data;
   };
   const Line = (porps) => {
     let { Sign, Exponent, Hide, Mantissa, DecimalTruthValue, BinaryTruthValue } = porps.data;
     return (
-      <div style={{ marginBottom: '20px' }}>
-        <List size="small" bordered>
-          <List.Item style={{ flexWrap: 'wrap' }}>
-            <IEEE754 data={{ Sign, Exponent, Hide, Mantissa, Round: '' }}></IEEE754>
-          </List.Item>
-          <List.Item className={Style['list-item']}>
-            <span className={Style['list-item-lable']}>十进制真值：</span>
-            <div className={Style['list-item-text']}> {DecimalTruthValue.value}</div>
-          </List.Item>
-          <List.Item className={Style['list-item']}>
-            <span className={Style['list-item-lable']}>二进制真值：</span>
-            <div className={Style['list-item-text']}>{BinaryTruthValue}</div>
-          </List.Item>
-          <List.Item className={Style['list-item']}>
-            <span className={Style['list-item-lable']}>十进制步骤：</span>
-            <div className={Style['list-item-text']}>
-              <Formula data={{ Sign, Exponent, Hide, Mantissa }}></Formula>
-            </div>
-          </List.Item>
-        </List>
+      <div>
+        <div style={{ margin: '20px 0' }}>
+          <IEEE754 data={{ Sign, Exponent, Hide, Mantissa, Round: '' }}></IEEE754>
+        </div>
+        <DetailsList
+          data={{
+            DecimalTruthValue: DecimalTruthValue.value,
+            BinaryTruthValue,
+            formulaData: { Sign, Exponent, Hide, Mantissa }
+          }}
+        />
       </div>
     );
   };

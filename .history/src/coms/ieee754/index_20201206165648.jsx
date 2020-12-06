@@ -12,7 +12,6 @@ export default (props) => {
   const [hid, setHid] = useState(Hide);
   const [man, setMan] = useState(Mantissa);
   const [rou, setRou] = useState(Round);
-  // 每次数据更新时，把值传回给父组件
   newData({
     index,
     value: { Sign, Exponent: exp, Hide: hid, Mantissa: man, Round: rou }
@@ -36,7 +35,6 @@ export default (props) => {
   );
   useEffect(() => {
     if (!move) return;
-    //使用新的指数 - 最开始的指数
     let num = parseInt(exp, 2) - parseInt(Exponent, 2);
     if (num > 0) {
       let all = fill(num - 1) + 1 + Mantissa;
@@ -44,7 +42,7 @@ export default (props) => {
       setMan(all.slice(0, 52));
       setRou(all.slice(52));
     } else {
-      setHid(Hide);
+      setHid('1.');
       setMan(Mantissa);
       setRou(Round);
     }

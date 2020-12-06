@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Input, List } from 'antd';
+import { Input } from 'antd';
 import IEEE754 from '@/coms/ieee754';
-import Formula from '@/coms/formula';
+import DetailsList from '@/coms/detailsList';
 import { toIEEE754 } from '@/utils';
 
 import Style from './index.module.scss';
@@ -26,50 +26,31 @@ export default () => {
       roundValue
     } = porps.data;
     return (
-      <div style={{ marginBottom: '20px' }}>
-        <List size="small" bordered>
-          <List.Item style={{ flexWrap: 'wrap' }}>
-            <IEEE754 data={{ Sign, Exponent, Hide, Mantissa, Round }}></IEEE754>
-            <div style={{ width: '100%', height: '30px' }}></div>
-            <IEEE754
-              data={{
-                Sign,
-                Exponent: roundValue.Exponent,
-                Hide: roundValue.Hide,
-                Mantissa: roundValue.Mantissa,
-                Round: ''
-              }}
-            ></IEEE754>
-          </List.Item>
-          <List.Item className={Style['list-item']}>
-            <span className={Style['list-item-lable']}>十进制真值：</span>
-            <div className={Style['list-item-text']}>{DecimalTruthValue}</div>
-          </List.Item>
-          <List.Item className={Style['list-item']}>
-            <span className={Style['list-item-lable']}>舍入十进制：</span>
-            <div className={Style['list-item-text']}>
-              {roundValue.DecimalTruthValue.truthSign}
-              {roundValue.DecimalTruthValue.value}
-            </div>
-          </List.Item>
-          <List.Item className={Style['list-item']}>
-            <span className={Style['list-item-lable']}>二进制真值：</span>
-            <div className={Style['list-item-text']}>{BinaryTruthValue}</div>
-          </List.Item>
-          <List.Item className={Style['list-item']}>
-            <span className={Style['list-item-lable']}>舍入二进制：</span>
-            <div className={Style['list-item-text']}>
-              {roundValue.DecimalTruthValue.truthSign}
-              {roundValue.BinaryTruthValue}
-            </div>
-          </List.Item>
-          <List.Item className={Style['list-item']}>
-            <span className={Style['list-item-lable']}>十进制步骤：</span>
-            <div className={Style['list-item-text']}>
-              <Formula data={roundValue}></Formula>
-            </div>
-          </List.Item>
-        </List>
+      <div>
+        <div style={{ margin: '20px 0' }}>
+          <IEEE754 data={{ Sign, Exponent, Hide, Mantissa, Round }} />
+          <div style={{ width: '100%', height: '30px' }}></div>
+          <IEEE754
+            data={{
+              Sign,
+              Exponent: roundValue.Exponent,
+              Hide: roundValue.Hide,
+              Mantissa: roundValue.Mantissa,
+              Round: ''
+            }}
+          />
+        </div>
+        <DetailsList
+          data={{
+            DecimalTruthValue,
+            RoundDecimalTruthValue:
+              roundValue.DecimalTruthValue.truthSign + roundValue.DecimalTruthValue.value,
+            BinaryTruthValue,
+            RoundBinaryTruthValue:
+              roundValue.DecimalTruthValue.truthSign + roundValue.BinaryTruthValue,
+            formulaData: roundValue
+          }}
+        />
       </div>
     );
   };

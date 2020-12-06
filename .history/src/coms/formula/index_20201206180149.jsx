@@ -11,7 +11,7 @@ export default (props) => {
   let Special = isSpecialValue({ Sign, Exponent, Mantissa });
   if (Special) return Special.DecimalTruthValue;
   let ExponentStr = parseInt(Exponent, 2);
-  ExponentStr = ExponentStr == 0 ? '-1022' : `${ExponentStr} - 1023 = ${ExponentStr - 1023}`;
+  ExponentStr = ExponentStr == 0 ? '-1022' : `${ExponentStr} - 1023`;
   const openNotification = () => {
     notification.open({
       key: 'Ieee754formula',

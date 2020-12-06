@@ -1,7 +1,16 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Input, Button, Steps, notification } from 'antd';
 import IEEE754 from '@/coms/ieee754';
-import { toIEEE754, toAdd, toRound, sortMiddleware, fill, SpecialValue } from '@/utils';
+import DetailsList from '@/coms/detailsList';
+import {
+  toIEEE754,
+  toAdd,
+  toRound,
+  sortMiddleware,
+  fill,
+  SpecialValue,
+  ieee754ToDecimal
+} from '@/utils';
 
 import Style from './index.module.scss';
 
@@ -44,10 +53,20 @@ export default () => {
   const [totalNone, setTotalNone] = useState({});
   const [total, setTotal] = useState(getTotal());
   const [progress, setProgress] = useState(0);
+  //存储详细信息的数据
+  const [detailsData, setDetailsData] = useState(null);
   const CURRENT = useRef([]);
   const enCode = (value) => {
+    let arr = value.split(',');
+    if (arr.length !== 2) {
+      return notification.error({
+        key: 'notTwo',
+        message: '必须是2个数字相加！',
+        duration: 2.5
+      });
+    }
     try {
-      var arr = value.split(',').map((item) => {
+      arr = arr.map((item) => {
         CURRENT.current = [];
         const o = toIEEE754(item);
         if (o === false) {
@@ -56,7 +75,7 @@ export default () => {
             message: '不是数字!',
             duration: 2.5
           });
-          throw new Error('不是数字格式，中断操作！');
+          throw new Error('中断操作！');
         }
         return {
           key: Math.random(),
@@ -66,7 +85,7 @@ export default () => {
         };
       });
     } catch (e) {
-      return;
+      return console.error(e);
     }
     const data = [...arr];
     data.sort(sortMiddleware('Exponent'));
@@ -74,6 +93,7 @@ export default () => {
     setBitMap(arr);
     setProgress(0);
     setNone({});
+    setDetailsData(null);
     setTotal({
       ...total,
       Sign,
@@ -86,7 +106,15 @@ export default () => {
     },
     [bitMap]
   );
-
+  useEffect(() => {
+    if (!total.Sign || !total.Exponent || !total.Mantissa) return;
+    const { BinaryTruthValue, DecimalTruthValue } = ieee754ToDecimal(total);
+    setDetailsData({
+      DecimalTruthValue: DecimalTruthValue.value,
+      BinaryTruthValue,
+      formulaData: { ...total }
+    });
+  }, [total]);
   const all = {
     //对阶
     0: () => {
@@ -112,7 +140,7 @@ export default () => {
         const num = item.Hide + item.Mantissa + item.Round;
         return toAdd(2, total, num);
       }, 0);
-      let [left, right] = t.split('.');
+      let [left = '', right = ''] = t.split('.');
       let Mantissa = right.slice(0, 52);
       setTotal({
         ...total,
@@ -128,19 +156,25 @@ export default () => {
     2: () => {
       if (progress !== 2) return false;
       let all = total.Hide + total.Mantissa + total.Round;
-      let [left, rigth] = all.split('.');
+      const [left, rigth] = all.split('.');
       // 获得阶码要加的数值
-      let len = left.length - 1;
+      const len = left.length - 1;
       let Exponent = toAdd(2, total.Exponent, len.toString(2));
       // 得到阶码
       Exponent = fill(11 - Exponent.length) + Exponent;
       // left的第一位肯定是1，所致直接去后面所有的值和 right 拼接就好了
       // 然后和 right 拼接成隐藏位 + 尾数 + 舍入位
+      const Hide = left.slice(0, 1) + '.';
       all = left.slice(1) + rigth;
+      //特殊值处理，比如 1.1125369292536007e-308 + 1.1125369292536007e-308
+      //如果隐藏位为 1. 并且指数为0， 那么就说明阶码需要变化成00000000001
+      if (+Hide === 1 && +Exponent === 0) {
+        Exponent = '00000000001';
+      }
       setTotal({
         ...total,
         Exponent,
-        Hide: `1.`,
+        Hide,
         Mantissa: all.slice(0, 52),
         Round: all.slice(52)
       });
@@ -153,7 +187,6 @@ export default () => {
       setTotal({
         ...total,
         Exponent,
-        Hide: `1.`,
         Mantissa,
         Round: ''
       });
@@ -173,7 +206,7 @@ export default () => {
         message = '指数向下溢出！以舍入至0';
       }
       if (message) {
-        notification.error({
+        notification.warning({
           key: 'zhishuyichu',
           message,
           duration: 0
@@ -186,6 +219,9 @@ export default () => {
     if (all[progress]()) {
       setProgress(progress + 1);
     }
+  };
+  const prev = () => {
+    setProgress(progress - 1);
   };
   const isShow = (num) => {
     return progress > num;
@@ -220,9 +256,14 @@ export default () => {
         <div style={{ marginLeft: '20px' }}>
           {bitMap.length > 1 && progress < steps.length && (
             <Button type="primary" onClick={() => next()}>
-              下一步
+              {progress == steps.length - 1 ? '完成' : '下一步'}
             </Button>
           )}
+          {/* {bitMap.length > 1 && progress > 0 && (
+            <Button type="primary" onClick={() => prev()}>
+              上一步
+            </Button>
+          )} */}
         </div>
       </div>
       {bitMap.length > 1 && matchDom()}
@@ -240,6 +281,7 @@ export default () => {
           );
         })}
       </div>
+      {detailsData && progress == steps.length && <DetailsList data={detailsData} />}
     </div>
   );
 };

@@ -1,9 +1,4 @@
-import Calc, {
-  NumberToFilter,
-  removeAfterZero,
-  NumberToString,
-  removeBeforeZero
-} from '@/utils/calc';
+import { NumberToFilter, removeAfterZero, NumberToString, removeBeforeZero } from '@/utils/calc';
 
 export const SpecialValue = (() => {
   const Z_11_0 = fill(11),
@@ -592,5 +587,7 @@ export function toComplementCode({ value = '', bits = '32' }) {
   value = toOnesComplementCode(value);
 
   value = toAdd(2, value, 1);
-  return value.slice(~bits + 1);
+  value = value.slice(~bits + 1);
+  //负数补码符号位不能为0，因为最大负值
+  return value.replace(/^[01]/, '1');
 }

@@ -1,7 +1,8 @@
 import React, { useState, useRef } from 'react';
-import { Input, Select, Button, Tag, List, Divider } from 'antd';
+import { Input, Select, Button, Tag, List, Divider, notification } from 'antd';
 import CommonBits from '@/coms/commonBits';
 import { toTrueCode, toOnesComplementCode, toComplementCode, isNumber } from '@/utils';
+import { NumberToString } from '@/utils/calc';
 
 import Style from './index.module.scss';
 
@@ -18,21 +19,43 @@ export default () => {
     bits: '32'
   });
   const [allData, setallData] = useState([]);
-  const [inputValue, setInputValue] = useState('');
+  const verify = (value) => {
+    debugger;
+    const { bits, type } = option;
+    if (!isNumber(value)) {
+      return notification.error({
+        key: 'notNumber',
+        message: '数字格式不对！',
+        duration: 2
+      });
+    }
+    //检测是否有原码
+    const isTrue = type.includes('gold');
+    //检测是否为负数，负数补码比原码多表示一个负数。
+    const isFushu = value < 0;
+    const max = !isTrue && isFushu ? 2 ** (bits - 1) : 2 ** (bits - 1) - 1;
+    if (Math.abs(value) > max) {
+      return notification.error({
+        key: 'bits',
+        message: `超出${bits}bit界限！`,
+        duration: 2
+      });
+    }
+    return NumberToString(value);
+  };
+  const getVal = (value) => {
+    const { bits } = option;
+    if (!verify(value)) return false;
+    const trueCode = toTrueCode({ value, bits }),
+      // 传入反码的第一个值需要替换成 0 ，以保证是原真值的绝对值
+      onesComplementCode = toOnesComplementCode(trueCode.replace(/^\d/, '0')),
+      complementCode = toComplementCode({ value, bits });
+    return { trueCode, onesComplementCode, complementCode, inputValue: value };
+  };
   const enCode = (value) => {
     const str = value || '';
     let arr = str.split(',');
-    if (isNumber()) {
-    }
-    setInputValue(str);
-    const { bits } = option;
-    arr = arr.map((value) => {
-      const trueCode = toTrueCode({ value, bits }),
-        // 传入反码的第一个值需要替换成 0 ，以保证是原真值的绝对值
-        onesComplementCode = toOnesComplementCode(trueCode.replace(/^\d/, '0')),
-        complementCode = toComplementCode({ value, bits });
-      return { trueCode, onesComplementCode, complementCode };
-    });
+    arr = arr.map((val) => getVal(val)).filter(Boolean);
     setallData(arr);
   };
   const typeFn = (type) => {
@@ -85,7 +108,12 @@ export default () => {
       </div>
       <div>
         {allData.map((item) => {
-          const { trueCode = '', onesComplementCode = '', complementCode = '' } = item;
+          const {
+            trueCode = '',
+            onesComplementCode = '',
+            complementCode = '',
+            inputValue = ''
+          } = item;
           const isPositive = trueCode[0] === '0';
           const isTrueCode = option.type.includes('gold');
           const isComplementCode = option.type.includes('lime');

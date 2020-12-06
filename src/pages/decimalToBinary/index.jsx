@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Input, Table, Alert } from 'antd';
+import { Input, Table, Alert, notification } from 'antd';
 import { isNumber, toInt, toFloat } from '@/utils';
+import { NumberToString } from '@/utils/calc';
 
 import Style from './index.module.scss';
 
@@ -8,7 +9,8 @@ const intLeft = [
   {
     title: '被除数',
     align: 'center',
-    dataIndex: 'dividend'
+    dataIndex: 'dividend',
+    render: (text) => +text
   },
   {
     align: 'center',
@@ -29,7 +31,8 @@ const intLeft = [
   {
     title: '商',
     align: 'center',
-    dataIndex: 'quotient'
+    dataIndex: 'quotient',
+    render: (text) => +text
   },
   {
     align: 'center',
@@ -53,7 +56,7 @@ const intRight = [
     align: 'center',
     dataIndex: 'dividend',
     render: (text, record) => (
-      <span className={record.dividend > 1 ? Style['int-right-dividend'] : ''}>{text}</span>
+      <span className={record.dividend > 1 ? Style['int-right-dividend'] : ''}>{+text}</span>
     )
   },
   {
@@ -63,14 +66,16 @@ const intRight = [
   },
   {
     align: 'center',
-    dataIndex: 'remainder'
+    dataIndex: 'remainder',
+    render: (text) => +text
   }
 ];
 const floatRight = [
   {
     title: '被乘数',
     align: 'center',
-    dataIndex: 'multiplicand'
+    dataIndex: 'multiplicand',
+    render: (text) => +text
   },
   {
     align: 'center',
@@ -98,10 +103,10 @@ const floatRight = [
           {record.remainder === '1' && text !== '0' ? (
             <>
               <span className={Style['delete']}>{record.remainder}</span>
-              <em>{text.replace('0.', '.')}</em>
+              <em>{+text.replace('0.', '.')}</em>
             </>
           ) : (
-            text
+            +text
           )}
         </>
       );
@@ -126,8 +131,15 @@ export default () => {
   const [floatValue, setFloatValue] = useState('');
   const [type, setType] = useState(0);
   const enCode = (value) => {
-    if (!isNumber(value)) return;
-    value = value.replace('-', '');
+    value = value.replace(/^\-/, '');
+    if (!isNumber(value)) {
+      return notification.error({
+        key: 'zhishuyichu',
+        message: '数字格式不对！',
+        duration: 2
+      });
+    }
+    value = NumberToString(value);
     let [int = '', float = ''] = value.split('.');
     let isInt = int && int !== '0';
     let isFloat = float && float !== '0';

@@ -468,7 +468,7 @@ export function toIEEE754(value) {
   let DecimalTruthValue = (value = value.replace('-', ''));
   //得到二进制编码
   let Binary = toBinary(value);
-
+  //判断是否是数字0
   if (Binary.indexOf('1') < 0) {
     return SpecialValue.get(truthSign + '0');
   }
@@ -506,8 +506,9 @@ export function toIEEE754(value) {
 
   //二进制的真值
   let BinaryTruthValue = (() => {
-    //针对无限循环小数的真值，取第一个1和之后的52 + 16 + 1位
-    let len = Binary.indexOf('1') + 52 + 16 + 1;
+    //针对无限循环小数的真值，取第一个1和之后的52 + 16
+    //+ 2是因为有隐藏头2位
+    let len = Binary.indexOf('1') + 52 + 16 + 2;
     return Binary.substr(0, len);
   })();
   //舍入后的值

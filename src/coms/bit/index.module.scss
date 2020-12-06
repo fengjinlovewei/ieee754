@@ -1,24 +1,23 @@
 .bit-s {
-  background-color: #c24557;
+  background-color: $Sign;
 }
 
 .bit-e {
-  background-color: #007abb;
+  background-color: $Exponent;
 }
 
 .bit-m {
-
-  background-color: #039f4e;
+  background-color: $Mantissa;
 }
 .bit-z1 {
-  background-color: #e8db1e;
+  background-color: $Round_1;
 }
 .bit-z2 {
-  background-color: #c4b9a3;
+  background-color: $Round_2;
 }
-.true{
-  color: #1e0155;
+.true {
+  color: $true;
 }
-.false{
-  color: #fff;
+.false {
+  color: $false;
 }

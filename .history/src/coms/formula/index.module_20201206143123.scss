@@ -1,0 +1,36 @@
+.formula-box {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  i {
+    padding: 0 8px;
+  }
+}
+.formula-item {
+}
+.formula-fraction-0 {
+  display: flex;
+  align-items: center;
+  color: #999;
+}
+.formula-fraction-1 {
+  display: flex;
+  align-items: center;
+  color: #000;
+}
+.formula-fraction {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.formula-fraction-line {
+  display: inline-block;
+  height: 1px;
+  width: 40px;
+}
+.Ieee754formula {
+  width: 500px;
+  img {
+    width: 100%;
+  }
+}

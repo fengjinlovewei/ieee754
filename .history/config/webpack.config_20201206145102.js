@@ -423,15 +423,7 @@ module.exports = function (webpackEnv) {
                   }
                 },
                 'sass-loader'
-              ).concat({
-                loader: 'sass-resources-loader',
-                options: {
-                  resources: [
-                    // 这里按照你的公共变量文件路径填写
-                    path.resolve(__dirname, './../src/style/color.scss')
-                  ]
-                }
-              })
+              )
             },
             // "file" loader makes sure those assets get served by WebpackDevServer.
             // When you `import` an asset, you get its (virtual) filename.

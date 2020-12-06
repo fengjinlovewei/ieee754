@@ -10,8 +10,8 @@ export default (props) => {
   //查看是否是特殊值
   let Special = isSpecialValue({ Sign, Exponent, Mantissa });
   if (Special) return Special.DecimalTruthValue;
-  let ExponentStr = parseInt(Exponent, 2);
-  ExponentStr = ExponentStr == 0 ? '0' : `${ExponentStr} - 1023`;
+  Exponent = parseInt(Exponent, 2) - 1023;
+  Exponent = Math.max(Exponent, -1022);
   const openNotification = () => {
     notification.open({
       key: 'Ieee754formula',
@@ -20,30 +20,29 @@ export default (props) => {
       className: Style['Ieee754formula']
     });
   };
-  const getStyle = (item) => {
-    return item == '0'
-      ? `${Style['formula-fraction']} ${Style['formula-fraction-0']}`
-      : `${Style['formula-fraction']} ${Style['formula-fraction-1']}`;
-  };
+
   return (
     <div className={Style['formula-box']}>
       <span className={Style['formula-item']}>
-        -1<sup className={Style['sing']}>{Sign}</sup>
+        -1<sup>{Sign}</sup>
       </span>
       <i>x</i>
       <span>
-        2<sup className={Style['exponent']}>{ExponentStr}</sup>
+        2<sup>{Exponent}</sup>
       </span>
       <i>x</i>
-      <i className={Style['formula-big']}>(</i>
+      <i>(</i>
       <span>{+Hide}</span>
       {Mantissa.split('').map((item, i) => {
         return (
-          <div key={i} className={'dddd'} className={getStyle(item)}>
+          <div
+            key={i}
+            className={item == '0' ? Style['formula-fraction-0'] : Style['formula-fraction-1']}
+          >
             <i>+</i>
             <em>{item}</em>
             <em style={{ padding: '0 5px' }}>x</em>
-            <div className={Style['formula-fraction-item']}>
+            <div className={Style['formula-fraction']}>
               <span>1</span>
               <span className={Style['formula-fraction-line']}></span>
               <span>
@@ -53,10 +52,24 @@ export default (props) => {
           </div>
         );
       })}
-      <i className={Style['formula-big']}>)</i>
+      <i>)</i>
       <Button type="link" onClick={openNotification}>
         查看公式
       </Button>
     </div>
   );
+  // let { DecimalTruthValue } = roundValue;
+  // if (!DecimalTruthValue.text) return null;
+  // return (
+  //   <div>
+  //     {DecimalTruthValue.text.map((item, i) => {
+  //       return (
+  //         <span style={{ display: 'inline-block' }} key={item.size}>
+  //           {i !== 0 && ` + `}
+  //           {item.item}x2<sup>{item.size}</sup>
+  //         </span>
+  //       );
+  //     })}
+  //   </div>
+  // );
 };

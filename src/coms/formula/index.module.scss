@@ -5,20 +5,37 @@
   i {
     padding: 0 8px;
   }
+  sup {
+    display: inline-block;
+    font-size: 10px;
+    transform: scale(0.9);
+  }
+  .sing {
+    color: $Sign;
+  }
+  .exponent {
+    color: $Exponent;
+  }
 }
-.formula-item {
-}
-.formula-fraction-0 {
-  display: flex;
-  align-items: center;
-  color: #999;
-}
-.formula-fraction-1 {
-  display: flex;
-  align-items: center;
-  color: #000;
+.formula-big {
+  font-size: 30px;
+  height: 30px;
 }
 .formula-fraction {
+  display: flex;
+  align-items: center;
+  color: $Mantissa;
+  .formula-fraction-line {
+    background-color: $Mantissa;
+  }
+}
+.formula-fraction-0 {
+  opacity: 0.2;
+}
+.formula-fraction-1 {
+  opacity: 1;
+}
+.formula-fraction-item {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -26,8 +43,7 @@
 .formula-fraction-line {
   display: inline-block;
   height: 1px;
-  width: 40px;
-  background-color: #000;
+  width: 30px;
 }
 .Ieee754formula {
   width: 500px;

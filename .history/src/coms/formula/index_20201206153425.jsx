@@ -20,30 +20,29 @@ export default (props) => {
       className: Style['Ieee754formula']
     });
   };
-  const getStyle = (item) => {
-    return item == '0'
-      ? `${Style['formula-fraction']} ${Style['formula-fraction-0']}`
-      : `${Style['formula-fraction']} ${Style['formula-fraction-1']}`;
-  };
+
   return (
     <div className={Style['formula-box']}>
       <span className={Style['formula-item']}>
-        -1<sup className={Style['sing']}>{Sign}</sup>
+        -1<sup>{Sign}</sup>
       </span>
       <i>x</i>
       <span>
-        2<sup className={Style['exponent']}>{ExponentStr}</sup>
+        2<sup>{ExponentStr}</sup>
       </span>
       <i>x</i>
       <i className={Style['formula-big']}>(</i>
       <span>{+Hide}</span>
       {Mantissa.split('').map((item, i) => {
         return (
-          <div key={i} className={'dddd'} className={getStyle(item)}>
+          <div
+            key={i}
+            className={item == '0' ? Style['formula-fraction-0'] : Style['formula-fraction-1']}
+          >
             <i>+</i>
             <em>{item}</em>
             <em style={{ padding: '0 5px' }}>x</em>
-            <div className={Style['formula-fraction-item']}>
+            <div className={Style['formula-fraction']}>
               <span>1</span>
               <span className={Style['formula-fraction-line']}></span>
               <span>

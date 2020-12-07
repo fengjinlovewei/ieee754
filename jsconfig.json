@@ -1,0 +1,15 @@
+{
+  "exclude": ["node_modules"],
+  "compilerOptions": {
+    "module": "commonJS",
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "jsx": "react",
+    "target": "esnext",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["src/**/*"]
+}

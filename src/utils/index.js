@@ -598,5 +598,3 @@ export function toComplementCode({ value = '', bits = '32' }) {
   //负数补码符号位不能为0，因为最大负值
   return value.replace(/^[01]/, '1');
 }
-
-console.log(Split('111 ,,,,  2,2,2,2,3，，，，韦尔奇我dqqwe,qwe,qw,ed,zxc,.vcv,'));

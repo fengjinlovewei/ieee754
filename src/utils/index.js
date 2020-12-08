@@ -558,6 +558,13 @@ export function sortMiddleware(key) {
     return b[key] - a[key];
   };
 }
+//
+export function Split(value) {
+  return `${value}`
+    .split(/[,，]/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
 // 原码
 export function toTrueCode({ value = '', bits = '32' }) {
   bits--;
@@ -591,3 +598,5 @@ export function toComplementCode({ value = '', bits = '32' }) {
   //负数补码符号位不能为0，因为最大负值
   return value.replace(/^[01]/, '1');
 }
+
+console.log(Split('111 ,,,,  2,2,2,2,3，，，，韦尔奇我dqqwe,qwe,qw,ed,zxc,.vcv,'));

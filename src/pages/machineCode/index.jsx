@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Input, Select, Button, Tag, List, Divider, notification } from 'antd';
 import CommonBits from '@/coms/commonBits';
-import { toTrueCode, toOnesComplementCode, toComplementCode, isNumber } from '@/utils';
+import { toTrueCode, toOnesComplementCode, toComplementCode, isNumber, Split } from '@/utils';
 import { NumberToString } from '@/utils/calc';
 
 import Style from './index.module.scss';
@@ -24,7 +24,7 @@ export default () => {
     if (!isNumber(value)) {
       return notification.error({
         key: 'notNumber',
-        message: '数字格式不对！',
+        message: `${value} 是错误的数字格式！`,
         duration: 2
       });
     }
@@ -52,9 +52,9 @@ export default () => {
     return { trueCode, onesComplementCode, complementCode, inputValue: value };
   };
   const enCode = (value) => {
-    const str = value || '';
-    let arr = str.split(',');
-    arr = arr.map((val) => getVal(val)).filter(Boolean);
+    let arr = Split(value)
+      .map((val) => getVal(val))
+      .filter(Boolean);
     setallData(arr);
   };
   const typeFn = (type) => {

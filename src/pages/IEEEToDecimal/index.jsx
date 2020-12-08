@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Input, List, Button, notification } from 'antd';
 import IEEE754 from '@/coms/ieee754';
 import DetailsList from '@/coms/detailsList';
-import { ieee754ToDecimalToInput, isSpecialValue } from '@/utils';
+import { ieee754ToDecimalToInput, Split } from '@/utils';
 
 import Style from './index.module.scss';
 
@@ -11,8 +11,7 @@ export default () => {
   const input = useRef(null);
   const enCode = () => {
     let value = input.current.state.value;
-    let arr = value
-      .split(',')
+    let arr = Split(value)
       .map((item) => validation(item))
       .filter(Boolean);
     setBitMap(arr);

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Input, notification } from 'antd';
 import IEEE754 from '@/coms/ieee754';
 import DetailsList from '@/coms/detailsList';
-import { toIEEE754 } from '@/utils';
+import { toIEEE754, Split } from '@/utils';
 
 import Style from './index.module.scss';
 
@@ -11,8 +11,7 @@ export default () => {
   const [bitMap, setBitMap] = useState([]);
 
   const enCode = (value) => {
-    let arr = value
-      .split(',')
+    let arr = Split(value)
       .map((item) => {
         const data = toIEEE754(item);
         if (data === false) {

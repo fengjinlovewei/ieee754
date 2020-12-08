@@ -9,7 +9,8 @@ import {
   sortMiddleware,
   fill,
   SpecialValue,
-  ieee754ToDecimal
+  ieee754ToDecimal,
+  Split
 } from '@/utils';
 
 import Style from './index.module.scss';
@@ -57,7 +58,7 @@ export default () => {
   const [detailsData, setDetailsData] = useState(null);
   const CURRENT = useRef([]);
   const enCode = (value) => {
-    let arr = value.split(',');
+    let arr = Split(value);
     if (arr.length !== 2) {
       return notification.error({
         key: 'notTwo',

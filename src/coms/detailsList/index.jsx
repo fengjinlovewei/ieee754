@@ -1,9 +1,10 @@
-import React from 'react';
-import { List } from 'antd';
+import React, { useState } from 'react';
+import { List, Button } from 'antd';
 import Formula from '@/coms/formula';
 import Style from './index.module.scss';
 
 export default (props) => {
+  const [show, setShow] = useState(false);
   const { children, data = {} } = props;
   const {
     DecimalTruthValue,
@@ -42,9 +43,17 @@ export default (props) => {
         )}
         {formulaData && (
           <List.Item className={Style['list-item']}>
-            <span className={Style['list-item-lable']}>十进制步骤：</span>
+            <span className={Style['list-item-lable']}>
+              <Button
+                type="link"
+                onClick={() => setShow(!show)}
+                style={{ padding: 0, height: '26px' }}
+              >
+                十进制步骤：
+              </Button>
+            </span>
             <div className={Style['list-item-text']}>
-              <Formula data={formulaData}></Formula>
+              {show ? <Formula data={formulaData}></Formula> : <span>点击标题显示内容</span>}
             </div>
           </List.Item>
         )}

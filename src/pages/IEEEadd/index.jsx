@@ -72,7 +72,7 @@ export default () => {
         if (o === false) {
           notification.error({
             key: 'notNumber',
-            message: '不是数字!',
+            message: `${item} 是错误的数字格式！`,
             duration: 2.5
           });
           throw new Error('中断操作！');

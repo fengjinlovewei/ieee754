@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Input } from 'antd';
+import { Input, notification } from 'antd';
 import IEEE754 from '@/coms/ieee754';
 import DetailsList from '@/coms/detailsList';
 import { toIEEE754 } from '@/utils';
@@ -11,7 +11,20 @@ export default () => {
   const [bitMap, setBitMap] = useState([]);
 
   const enCode = (value) => {
-    let arr = value.split(',').map((item) => toIEEE754(item));
+    let arr = value
+      .split(',')
+      .map((item) => {
+        const data = toIEEE754(item);
+        if (data === false) {
+          notification.error({
+            key: item,
+            message: `${item} 是错误的数字格式！`,
+            duration: 0
+          });
+        }
+        return data;
+      })
+      .filter(Boolean);
     setBitMap(arr);
   };
   const Line = (porps) => {

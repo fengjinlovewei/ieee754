@@ -28,7 +28,7 @@ export default (props) => {
       let cloneExponent = parseInt(exp, 2);
       cloneExponent = (cloneExponent + value).toString(2);
       cloneExponent = fill(11 - cloneExponent.length) + cloneExponent;
-      if (+cloneExponent >= +Exponent && +cloneExponent <= 11111111110) {
+      if (+cloneExponent >= +Exponent && +cloneExponent < 11111111110) {
         setExp(cloneExponent);
       }
     },

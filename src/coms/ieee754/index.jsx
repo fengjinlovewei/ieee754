@@ -42,7 +42,7 @@ export default (props) => {
       let all = fill(num - 1) + 1 + Mantissa;
       setHid('0.');
       setMan(all.slice(0, 52));
-      setRou(all.slice(52));
+      setRou(all.slice(52, 68));
     } else {
       setHid(Hide);
       setMan(Mantissa);

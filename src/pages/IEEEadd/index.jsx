@@ -196,7 +196,7 @@ export default () => {
     //溢出判断
     4: () => {
       if (progress !== 4) return false;
-      const { Sign, Exponent, Mantissa } = total;
+      const { Exponent, Mantissa } = total;
       let message = '';
       if (Exponent === '11111111111') {
         setTotal(SpecialValue.get(`Infinity`));
@@ -221,9 +221,9 @@ export default () => {
       setProgress(progress + 1);
     }
   };
-  const prev = () => {
-    setProgress(progress - 1);
-  };
+  // const prev = () => {
+  //   setProgress(progress - 1);
+  // };
   const isShow = (num) => {
     return progress > num;
   };

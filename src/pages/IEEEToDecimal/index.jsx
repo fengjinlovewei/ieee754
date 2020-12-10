@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Input, List, Button, notification } from 'antd';
+import { Input, Button, notification } from 'antd';
 import IEEE754 from '@/coms/ieee754';
 import DetailsList from '@/coms/detailsList';
 import { ieee754ToDecimalToInput, Split } from '@/utils';

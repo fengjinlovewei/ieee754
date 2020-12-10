@@ -1,7 +1,5 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Bit from '@/coms/bit';
-
-import Style from './index.module.scss';
 
 export default (props) => {
   let { value = '' } = props;

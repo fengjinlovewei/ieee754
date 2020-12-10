@@ -1,5 +1,5 @@
-import React, { useState, useRef } from 'react';
-import { Input, Select, Button, Tag, List, Divider, notification } from 'antd';
+import React, { useState } from 'react';
+import { Input, Select, Tag, List, Divider, notification } from 'antd';
 import CommonBits from '@/coms/commonBits';
 import { toTrueCode, toOnesComplementCode, toComplementCode, isNumber, Split } from '@/utils';
 import { NumberToString } from '@/utils/calc';

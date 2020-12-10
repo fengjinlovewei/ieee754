@@ -36,10 +36,11 @@ export default (props) => {
   );
   useEffect(() => {
     if (!move) return;
+    debugger;
     //使用新的指数 - 最开始的指数
     let num = parseInt(exp, 2) - parseInt(Exponent, 2);
     if (num > 0) {
-      let all = fill(num - 1) + 1 + Mantissa;
+      let all = fill(num - 1) + +Hide + Mantissa;
       setHid('0.');
       setMan(all.slice(0, 52));
       setRou(all.slice(52, 68));

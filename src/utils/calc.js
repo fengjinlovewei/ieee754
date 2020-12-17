@@ -3,105 +3,106 @@ export function removeBeforeZero(value) {
   value = value.replace(/^\./, '0.');
   return value ? value : '0';
 }
-export function removeAfterZero(value) {
-  if (!value) return '0';
-  value = `${value}`;
-  value = value.replace(/\.(0+)?$/, '');
-  if (value.indexOf('.') > -1) {
-    value = value.replace(/(?<!0)0+$/, '');
-  }
-  return value;
-}
-export function NumberWithReg(s) {
-  return [
-    {
-      val: s.match(/^(-?)(\d+)\.(\d+)e-(\d+)$/),
-      f() {
-        //["1.25e-21", "1", "25", "21"]
-        let m = this.val;
-        return {
-          sign: m[1],
-          value: removeBeforeZero(m[2] + m[3]),
-          order: ~(+m[4] + m[3].length) + 1,
-          other: m
-        };
-      }
-    },
-    {
-      val: s.match(/^(-?)(\d+)\.(\d+)e\+(\d+)$/),
-      f() {
-        //["-", "1.25e+21", "1", "25", "21"]
-        let m = this.val;
-        return {
-          sign: m[1],
-          value: removeBeforeZero(m[2] + m[3]),
-          order: m[4] - m[3].length,
-          other: m
-        };
-      }
-    },
-    {
-      val: s.match(/^(-?)(\d+)e-(\d+)$/),
-      f() {
-        //["-", "1e-21", "1", "21"]
-        let m = this.val;
-        return {
-          sign: m[1],
-          value: removeBeforeZero(m[2]),
-          order: ~m[3] + 1,
-          other: m
-        };
-      }
-    },
-    {
-      val: s.match(/^(-?)(\d+)e\+(\d+)$/),
-      f() {
-        //["-", "1e+21", "1", "21"]
-        let m = this.val;
-        return {
-          sign: m[1],
-          value: removeBeforeZero(m[2]),
-          order: +m[3],
-          other: m
-        };
-      }
-    },
-    {
-      val: s.match(/^(-?)(\d+)\.(\d+)$/),
-      f() {
-        //["-", "1.21", "1", "21"]
-        let m = this.val;
-        return {
-          sign: m[1],
-          value: removeBeforeZero(m[2] + m[3]),
-          order: ~m[3].length + 1,
-          other: m
-        };
-      }
-    },
-    {
-      val: s.match(/^(-?)(\d+)$/),
-      f() {
-        //["-", "126"]
-        let m = this.val;
-        return {
-          sign: m[1],
-          value: removeBeforeZero(m[2]),
-          order: 0,
-          other: m
-        };
-      }
+// 为什么叫SF??? 顺丰快递？还是影魔？
+const SF = [
+  {
+    reg: /^NaN|Infinity|-Infinity$/,
+    f(m) {
+      //["NaN", "Infinity", "-Infinity"]
+      return {
+        sign: '',
+        value: m[0],
+        order: 0,
+        other: m
+      };
     }
-  ];
-}
-//格式化数字
-export function NumberToFilter(n) {
-  const obj = NumberWithReg(`${n}`);
-  for (let i = 0; i < obj.length; i++) {
-    if (obj[i].val) {
-      return obj[i].f();
+  },
+  {
+    reg: /^(-?)(\d+)\.(\d+)e-(\d+)$/,
+    f(m) {
+      //["1.25e-21", "1", "25", "21"]
+      return {
+        sign: m[1],
+        value: removeBeforeZero(m[2] + m[3]),
+        order: ~(+m[4] + m[3].length) + 1,
+        other: m
+      };
+    }
+  },
+  {
+    reg: /^(-?)(\d+)\.(\d+)e\+(\d+)$/,
+    f(m) {
+      //["-", "1.25e+21", "1", "25", "21"]
+      return {
+        sign: m[1],
+        value: removeBeforeZero(m[2] + m[3]),
+        order: m[4] - m[3].length,
+        other: m
+      };
+    }
+  },
+  {
+    reg: /^(-?)(\d+)e-(\d+)$/,
+    f(m) {
+      //["-", "1e-21", "1", "21"]
+      return {
+        sign: m[1],
+        value: removeBeforeZero(m[2]),
+        order: ~m[3] + 1,
+        other: m
+      };
+    }
+  },
+  {
+    reg: /^(-?)(\d+)e\+(\d+)$/,
+    f(m) {
+      //["-", "1e+21", "1", "21"]
+      return {
+        sign: m[1],
+        value: removeBeforeZero(m[2]),
+        order: +m[3],
+        other: m
+      };
+    }
+  },
+  {
+    reg: /^(-?)(\d+)\.(\d+)$/,
+    f(m) {
+      //["-", "1.21", "1", "21"]
+      return {
+        sign: m[1],
+        value: removeBeforeZero(m[2] + m[3]),
+        order: ~m[3].length + 1,
+        other: m
+      };
+    }
+  },
+  {
+    reg: /^(-?)(\d+)$/,
+    f(m) {
+      //["-", "126"]
+      return {
+        sign: m[1],
+        value: removeBeforeZero(m[2]),
+        order: 0,
+        other: m
+      };
     }
   }
+];
+export function NumberWithReg(v, len = SF.length) {
+  v = `${v}`;
+  let i = 0,
+    value = null;
+  while (i < len) {
+    value = v.match(SF[i].reg);
+    if (value) {
+      return SF[i].f(value);
+    }
+    i++;
+  }
+  if (len === 5) return v;
+  return SF[0].f('NaN'.match(SF[0].reg));
 }
 function Max(all) {
   return Math.max.apply(
@@ -122,9 +123,7 @@ function Min(all) {
 //提供计算必要的数值信息
 function getChild(arr) {
   //过滤后数组
-  let all = arr.map((item) => {
-    return NumberToFilter(item);
-  });
+  let all = arr.map((item) => NumberWithReg(item));
   //获取最大阶数
   let max = Max(all);
   //获取最小阶数
@@ -132,6 +131,10 @@ function getChild(arr) {
   return { arr, all, max, min };
 }
 function pad(num) {
+  //如果是NaN,Infinity,-Infinity,他们的other的length都为1
+  if (num.other.length === 1) {
+    return num.other[0];
+  }
   // 如果是1e-25这种不带小数点的 返回0
   let len = num.other.length === 4 ? 0 : num.other[3].length;
   if (num.order < 0) {
@@ -142,46 +145,43 @@ function pad(num) {
   }
 }
 export function NumberToString(value) {
-  let s = value.toString();
   //后2个对结果有影响，所以去掉
-  const obj = NumberWithReg(s).slice(0, 4);
-  for (let i = 0; i < obj.length; i++) {
-    if (obj[i].val) {
-      return pad(obj[i].f());
-    }
-  }
-  return s;
+  const s = NumberWithReg(value, 5);
+  if (typeof s === 'string') return s;
+  return pad(s);
 }
 export default {
   //加法
   add(...arg) {
-    let { all, min } = getChild(arg);
-    let num = all.reduce((total, item) => {
-      return total + item.value * 10 ** (item.order + Math.abs(min));
-    }, 0);
-    return `${num / 10 ** Math.abs(min)}`;
+    const { all, min } = getChild(arg),
+      absMin = Math.abs(min),
+      num = all.reduce((total, item, i) => {
+        return total + `${item.sign}${item.value}` * 10 ** (item.order + absMin);
+      }, 0);
+    return `${num / 10 ** absMin}`;
   },
   //减法
   sub(...arg) {
-    let { all, min } = getChild(arg);
-    let num = all.reduce((total, item, i) => {
-      i === 1 && (total = total.value * 10 ** (total.order + Math.abs(min)));
-      return total - item.value * 10 ** (item.order + Math.abs(min));
-    });
-    return `${num / 10 ** Math.abs(min)}`;
+    const { all, min } = getChild(arg),
+      absMin = Math.abs(min),
+      first = all.shift(),
+      num = all.reduce((total, item) => {
+        return total - `${item.sign}${item.value}` * 10 ** (item.order + absMin);
+      }, `${first.sign}${first.value}` * 10 ** (first.order + absMin));
+    return `${num / 10 ** absMin}`;
   },
   //乘法
   mul(...arg) {
-    let { all } = getChild(arg);
-    let num = all.reduce(
-      (total, item) => {
-        return {
-          value: total.value * item.value,
-          order: total.order + item.order
-        };
-      },
-      { value: 1, order: 0 }
-    );
+    const { all } = getChild(arg),
+      num = all.reduce(
+        (total, item) => {
+          return {
+            value: total.value * `${item.sign}${item.value}`,
+            order: total.order + item.order
+          };
+        },
+        { value: 1, order: 0 }
+      );
     if (num.order < 0) {
       return `${num.value / 10 ** (~num.order + 1)}`;
     }
@@ -189,20 +189,19 @@ export default {
   },
   //除法
   div(...arg) {
-    let { arr, all } = getChild(arg);
-    //可以自定义返回，如果有除数或者被除数为0返回的值
-    if (arr.includes(0)) {
-      console.warn(`除数或者被除数为 0,以返回 1 处理`);
-      return 1;
-    }
-    let num = all.reduce((total, item) => {
-      let min = Math.abs(Min([total, item]));
-      let num = (total.value * 10 ** (total.order + min)) / (item.value * 10 ** (item.order + min));
-      return NumberToFilter(num);
+    const { all } = getChild(arg);
+    const num = all.reduce((total, item) => {
+      //取2个数的最小指数的绝对值min
+      const min = Math.abs(Min([total, item])),
+        num =
+          (`${total.sign}${total.value}` * 10 ** (total.order + min)) /
+          (`${item.sign}${item.value}` * 10 ** (item.order + min));
+      //除完的数很大可能会出现小数，所以需要再次格式化
+      return NumberWithReg(num);
     });
     if (num.order < 0) {
-      return `${num.value / 10 ** (~num.order + 1)}`;
+      return `${num.sign}${num.value / 10 ** (~num.order + 1)}`;
     }
-    return `${num.value * 10 ** num.order}`;
+    return `${num.sign}${num.value * 10 ** num.order}`;
   }
 };

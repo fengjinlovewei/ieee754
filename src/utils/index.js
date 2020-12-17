@@ -1,4 +1,4 @@
-import { NumberToFilter, removeAfterZero, NumberToString, removeBeforeZero } from '@/utils/calc';
+import { NumberWithReg, NumberToString, removeBeforeZero } from '@/utils/calc';
 
 export const SpecialValue = (() => {
   const Z_11_0 = fill(11),
@@ -130,6 +130,15 @@ export const SpecialValue = (() => {
     ]
   ]);
 })();
+export function removeAfterZero(value) {
+  if (!value) return '0';
+  value = `${value}`;
+  value = value.replace(/\.(0+)?$/, '');
+  if (value.indexOf('.') > -1) {
+    value = value.replace(/(?<!0)0+$/, '');
+  }
+  return value;
+}
 // 填充函数
 export function fill(length, value = 0) {
   return ''.padEnd(length, value);
@@ -284,7 +293,7 @@ export function binaryToDecimal(value) {
 //无精度损失加法计算, base参数为进制数
 export function toAdd(base, ...arg) {
   //首先把参与加法计算的参数格式化
-  arg = arg.map((t) => NumberToFilter(t));
+  arg = arg.map((t) => NumberWithReg(t));
   //取出最小的指数，因为其他数字要与此值为基准，就是以值对阶
   //取出最大的指数，因为如果参与运算的都是小数需要把0还回去
   const order = (() => {
@@ -481,6 +490,7 @@ export function toIEEE754(value) {
   if (!isNumber(value)) {
     return false;
   }
+  debugger;
   value = NumberToString(value);
   let Hide = '1.', //隐藏位的值
     Sign = '0', //机器码的符号

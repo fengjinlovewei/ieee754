@@ -144,6 +144,15 @@ function pad(num) {
     return `${num.sign}${num.value}${''.padEnd(num.order, 0)}`;
   }
 }
+// 前置校验函数
+function beforeVerify(fn) {
+  return function (...arg) {
+    if (arg.length === 0) return;
+    //对于四则运算，至少要两个数，一的数字统统死啦死啦滴
+    if (arg.length === 1) return 'NaN';
+    return fn.apply(this, arg);
+  };
+}
 export function NumberToString(value) {
   //后2个对结果有影响，所以去掉
   const s = NumberWithReg(value, 5);
@@ -152,16 +161,16 @@ export function NumberToString(value) {
 }
 export default {
   //加法
-  add(...arg) {
+  add: beforeVerify(function (...arg) {
     const { all, min } = getChild(arg),
       absMin = Math.abs(min),
       num = all.reduce((total, item, i) => {
         return total + `${item.sign}${item.value}` * 10 ** (item.order + absMin);
       }, 0);
     return `${num / 10 ** absMin}`;
-  },
+  }),
   //减法
-  sub(...arg) {
+  sub: beforeVerify(function (...arg) {
     const { all, min } = getChild(arg),
       absMin = Math.abs(min),
       first = all.shift(),
@@ -169,9 +178,9 @@ export default {
         return total - `${item.sign}${item.value}` * 10 ** (item.order + absMin);
       }, `${first.sign}${first.value}` * 10 ** (first.order + absMin));
     return `${num / 10 ** absMin}`;
-  },
+  }),
   //乘法
-  mul(...arg) {
+  mul: beforeVerify(function (...arg) {
     const { all } = getChild(arg),
       num = all.reduce(
         (total, item) => {
@@ -186,9 +195,9 @@ export default {
       return `${num.value / 10 ** (~num.order + 1)}`;
     }
     return `${num.value * 10 ** num.order}`;
-  },
+  }),
   //除法
-  div(...arg) {
+  div: beforeVerify(function (...arg) {
     const { all } = getChild(arg);
     const num = all.reduce((total, item) => {
       //取2个数的最小指数的绝对值min
@@ -203,5 +212,5 @@ export default {
       return `${num.sign}${num.value / 10 ** (~num.order + 1)}`;
     }
     return `${num.sign}${num.value * 10 ** num.order}`;
-  }
+  })
 };

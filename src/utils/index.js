@@ -490,7 +490,6 @@ export function toIEEE754(value) {
   if (!isNumber(value)) {
     return false;
   }
-  debugger;
   value = NumberToString(value);
   let Hide = '1.', //隐藏位的值
     Sign = '0', //机器码的符号

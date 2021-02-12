@@ -1,0 +1,56 @@
+.search-box {
+  width: 400px;
+  margin: 20px 0;
+}
+
+.line-box {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+}
+.line-line {
+  width: 1px;
+  margin: 0 30px;
+}
+.int-left-box {
+  position: relative;
+}
+.int-right-box {
+  position: relative;
+}
+.int-right-item {
+  display: flex;
+  align-items: center;
+}
+.int-right-dividend {
+  padding: 5px 10px;
+  border-left: 1px solid #999;
+  border-bottom: 1px solid #999;
+}
+.delete {
+  color: #ff6666;
+  text-decoration: line-through;
+}
+.message {
+  margin: 0 auto;
+  width: 70%;
+}
+.top-arrows {
+  position: absolute;
+  top: 40px;
+  right: -10px;
+  width: 2px;
+  bottom: 0;
+  background-color: #40a9ff;
+  &::before {
+    content: '';
+    display: block;
+    position: absolute;
+    left: -3px;
+    top: 0;
+    border: 6px solid transparent;
+    border-bottom: 12px solid #f00;
+    width: 0;
+    height: 0px;
+  }
+}

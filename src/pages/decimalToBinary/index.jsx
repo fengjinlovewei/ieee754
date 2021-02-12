@@ -179,30 +179,33 @@ export default () => {
       <div className={Style['line-box']}>
         {type !== 1 && intEquation.length != 0 && (
           <>
-            <div className="int-left-box">
+            <div className={Style['int-left-box']}>
               <Table columns={intLeft} dataSource={intEquation} pagination={false} size="small" />
+              <div className={Style['top-arrows']}></div>
             </div>
             <div className={Style['line-line']}></div>
             {type === 0 && (
-              <div className="int-right-box">
+              <div className={Style['int-right-box']}>
                 <Table
                   columns={intRight}
                   dataSource={intEquation}
                   pagination={false}
                   size="small"
                 />
+                <div className={Style['top-arrows']}></div>
               </div>
             )}
           </>
         )}
         {type !== 0 && floatEquation.length != 0 && (
-          <div className="int-right-box">
+          <div className={Style['int-right-box']}>
             <Table
               columns={floatRight}
               dataSource={floatEquation}
               pagination={false}
               size="small"
             />
+            <div className={Style['bottom-arrows']}></div>
           </div>
         )}
       </div>

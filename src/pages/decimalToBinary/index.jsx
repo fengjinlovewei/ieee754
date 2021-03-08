@@ -127,6 +127,8 @@ const { Search } = Input;
 export default () => {
   const [intEquation, setIntEquation] = useState([]);
   const [floatEquation, setFloatEquation] = useState([]);
+  const [int, setInt] = useState('');
+  const [float, setFloat] = useState('');
   const [intValue, setIntValue] = useState('');
   const [floatValue, setFloatValue] = useState('');
   const [type, setType] = useState(0);
@@ -145,25 +147,36 @@ export default () => {
     let isFloat = float && float !== '0';
     if (isInt) {
       const list = [];
+      setInt(int);
       setIntValue(toInt(int, list));
       setIntEquation(list);
       setType(0);
     } else {
+      setInt('');
       setIntValue('');
       setIntEquation([]);
     }
     if (isFloat) {
       const list = [];
+      setFloat(`0.${float}`);
       setFloatValue(toFloat(`0.${float}`, list));
       setFloatEquation(list);
       setType(1);
     } else {
+      setFloat('');
       setFloatValue('');
       setFloatEquation([]);
     }
     if (isInt && isFloat) {
       setType(2);
     }
+  };
+  const floatFilter = (float) => {
+    float = `${float}`;
+    if (float.length >= 200) {
+      return float.substr(0, 200) + '......';
+    }
+    return float;
   };
   return (
     <div>
@@ -173,8 +186,26 @@ export default () => {
         </div>
       </div>
       <div className={Style['message']}>
-        {intValue !== '' && <Alert message={<div>{intValue}</div>} type="success" />}
-        {floatValue !== '' && <Alert message={<div>0{floatValue}</div>} type="error" />}
+        {intValue !== '' && (
+          <Alert
+            message={
+              <div>
+                10进制数值“{int}”转化成2进制为：{intValue}
+              </div>
+            }
+            type="success"
+          />
+        )}
+        {floatValue !== '' && (
+          <Alert
+            message={
+              <div>
+                10进制数值“{float}”转化成2进制为：0{floatFilter(floatValue)}
+              </div>
+            }
+            type="error"
+          />
+        )}
       </div>
       <div className={Style['line-box']}>
         {type !== 1 && intEquation.length != 0 && (

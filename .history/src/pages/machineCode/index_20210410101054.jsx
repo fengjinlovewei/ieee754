@@ -1,7 +1,8 @@
-import React, { useState, useRef } from 'react';
-import { Input, Select, Button, Tag, List, Divider } from 'antd';
+import React, { useState } from 'react';
+import { Input, Select, Tag, List, Divider, notification } from 'antd';
 import CommonBits from '@/coms/commonBits';
-import { toTrueCode, toOnesComplementCode, toComplementCode, isNumber } from '@/utils';
+import { toTrueCode, toOnesComplementCode, toComplementCode, isNumber, Split } from '@/utils';
+import { NumberToString } from '@/utils/calc';
 
 import Style from './index.module.scss';
 
@@ -18,18 +19,42 @@ export default () => {
     bits: '32'
   });
   const [allData, setallData] = useState([]);
-  const verify = (inputValue) => {
+  const verify = (value) => {
+    const { bits, type } = option;
+    if (!isNumber(value)) {
+      return notification.error({
+        key: 'notNumber',
+        message: `${value} 是错误的数字格式！`,
+        duration: 2
+      });
+    }
+    //检测是否有原码
+    const isTrue = type.includes('gold');
+    //检测是否为负数，负数补码比原码多表示一个负数。
+    const isFushu = value < 0;
+    const max = !isTrue && isFushu ? 2 ** (bits - 1) : 2 ** (bits - 1) - 1;
+    if (Math.abs(value) > max) {
+      return notification.error({
+        key: 'bits',
+        message: `超出${bits}bit界限！`,
+        duration: 2
+      });
+    }
+    return NumberToString(value);
+  };
+  const getVal = (value) => {
     const { bits } = option;
-    const trueCode = toTrueCode({ inputValue, bits }),
+    if (!verify(value)) return false;
+    const trueCode = toTrueCode({ value, bits }),
       // 传入反码的第一个值需要替换成 0 ，以保证是原真值的绝对值
       onesComplementCode = toOnesComplementCode(trueCode.replace(/^\d/, '0')),
-      complementCode = toComplementCode({ inputValue, bits });
-    return { trueCode, onesComplementCode, complementCode, inputValue };
+      complementCode = toComplementCode({ value, bits });
+    return { trueCode, onesComplementCode, complementCode, inputValue: value };
   };
   const enCode = (value) => {
-    const str = value || '';
-    let arr = str.split(',');
-    arr = arr.map((value) => verify(value)).filter(Boolean);
+    let arr = Split(value)
+      .map((val) => getVal(val))
+      .filter(Boolean);
     setallData(arr);
   };
   const typeFn = (type) => {
@@ -69,6 +94,7 @@ export default () => {
                 placeholder="选择编码类型"
               ></Select>
               <Select defaultValue={option.bits} onChange={bitsFn}>
+                <Option value="8">8位</Option>
                 <Option value="32">32位</Option>
                 <Option value="64">64位</Option>
               </Select>

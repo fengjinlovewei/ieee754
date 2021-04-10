@@ -28,7 +28,7 @@ const steps = [
   },
   {
     title: '规格化',
-    description: '计算后的尾数需要把 . 移动到第一个1后面，左移一位阶码 +1，右移一位，阶码 -1。'
+    description: '计算后的尾数需要变成1.xxxx的形式，右移一位，阶码 +1。'
   },
   {
     title: '尾数舍入',
@@ -36,7 +36,7 @@ const steps = [
   },
   {
     title: '溢出判断',
-    description: '如果指数达到2047，则向无穷舍入；如果指数小于0，则向0舍入；'
+    description: '如果指数超出 11111111111，则向无穷舍入；如果指数小于0，则向0舍入；'
   }
 ];
 function getTotal() {

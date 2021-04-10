@@ -9,7 +9,8 @@ import {
   sortMiddleware,
   fill,
   SpecialValue,
-  ieee754ToDecimal
+  ieee754ToDecimal,
+  Split
 } from '@/utils';
 
 import Style from './index.module.scss';
@@ -27,7 +28,7 @@ const steps = [
   },
   {
     title: '规格化',
-    description: '计算后的尾数需要把 . 移动到第一个1后面，左移一位阶码 +1，右移一位，阶码 -1。'
+    description: '计算后的尾数需要变成1.xxxx的形式，右移一位，阶码 +1。'
   },
   {
     title: '尾数舍入',
@@ -35,7 +36,7 @@ const steps = [
   },
   {
     title: '溢出判断',
-    description: '如果指数达到2047，则向无穷舍入；如果指数小于0，则向0舍入；'
+    description: '如果指数超出 `11111111111`，则向无穷舍入；如果指数小于0，则向0舍入；'
   }
 ];
 function getTotal() {
@@ -57,7 +58,7 @@ export default () => {
   const [detailsData, setDetailsData] = useState(null);
   const CURRENT = useRef([]);
   const enCode = (value) => {
-    let arr = value.split(',');
+    let arr = Split(value);
     if (arr.length !== 2) {
       return notification.error({
         key: 'notTwo',
@@ -72,7 +73,7 @@ export default () => {
         if (o === false) {
           notification.error({
             key: 'notNumber',
-            message: '不是数字!',
+            message: `${item} 是错误的数字格式！`,
             duration: 2.5
           });
           throw new Error('中断操作！');
@@ -108,13 +109,7 @@ export default () => {
   );
   useEffect(() => {
     if (!total.Sign || !total.Exponent || !total.Mantissa) return;
-    console.log(total);
     const { BinaryTruthValue, DecimalTruthValue } = ieee754ToDecimal(total);
-    console.log({
-      DecimalTruthValue: DecimalTruthValue.value,
-      BinaryTruthValue,
-      formulaData: { ...total }
-    });
     setDetailsData({
       DecimalTruthValue: DecimalTruthValue.value,
       BinaryTruthValue,
@@ -201,7 +196,7 @@ export default () => {
     //溢出判断
     4: () => {
       if (progress !== 4) return false;
-      const { Sign, Exponent, Mantissa } = total;
+      const { Exponent, Mantissa } = total;
       let message = '';
       if (Exponent === '11111111111') {
         setTotal(SpecialValue.get(`Infinity`));
@@ -212,7 +207,7 @@ export default () => {
         message = '指数向下溢出！以舍入至0';
       }
       if (message) {
-        notification.error({
+        notification.warning({
           key: 'zhishuyichu',
           message,
           duration: 0
@@ -226,9 +221,9 @@ export default () => {
       setProgress(progress + 1);
     }
   };
-  const prev = () => {
-    setProgress(progress - 1);
-  };
+  // const prev = () => {
+  //   setProgress(progress - 1);
+  // };
   const isShow = (num) => {
     return progress > num;
   };

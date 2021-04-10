@@ -1,7 +1,17 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Input, Button, Steps, notification } from 'antd';
 import IEEE754 from '@/coms/ieee754';
-import { toIEEE754, toAdd, toRound, sortMiddleware, fill, SpecialValue } from '@/utils';
+import DetailsList from '@/coms/detailsList';
+import {
+  toIEEE754,
+  toAdd,
+  toRound,
+  sortMiddleware,
+  fill,
+  SpecialValue,
+  ieee754ToDecimal,
+  Split
+} from '@/utils';
 
 import Style from './index.module.scss';
 
@@ -18,7 +28,7 @@ const steps = [
   },
   {
     title: '规格化',
-    description: '计算后的尾数需要把 . 移动到第一个1后面，左移一位阶码 +1，右移一位，阶码 -1。'
+    description: '计算后的尾数需要变成1.xxxx的形式，右移一位，阶码 +1。'
   },
   {
     title: '尾数舍入',
@@ -44,19 +54,29 @@ export default () => {
   const [totalNone, setTotalNone] = useState({});
   const [total, setTotal] = useState(getTotal());
   const [progress, setProgress] = useState(0);
+  //存储详细信息的数据
+  const [detailsData, setDetailsData] = useState(null);
   const CURRENT = useRef([]);
   const enCode = (value) => {
+    let arr = Split(value);
+    if (arr.length !== 2) {
+      return notification.error({
+        key: 'notTwo',
+        message: '必须是2个数字相加！',
+        duration: 2.5
+      });
+    }
     try {
-      var arr = value.split(',').map((item) => {
+      arr = arr.map((item) => {
         CURRENT.current = [];
         const o = toIEEE754(item);
         if (o === false) {
           notification.error({
             key: 'notNumber',
-            message: '不是数字!',
+            message: `${item} 是错误的数字格式！`,
             duration: 2.5
           });
-          throw new Error('不是数字格式，中断操作！');
+          throw new Error('中断操作！');
         }
         return {
           key: Math.random(),
@@ -66,7 +86,7 @@ export default () => {
         };
       });
     } catch (e) {
-      return;
+      return console.error(e);
     }
     const data = [...arr];
     data.sort(sortMiddleware('Exponent'));
@@ -74,6 +94,7 @@ export default () => {
     setBitMap(arr);
     setProgress(0);
     setNone({});
+    setDetailsData(null);
     setTotal({
       ...total,
       Sign,
@@ -86,7 +107,15 @@ export default () => {
     },
     [bitMap]
   );
-
+  useEffect(() => {
+    if (!total.Sign || !total.Exponent || !total.Mantissa) return;
+    const { BinaryTruthValue, DecimalTruthValue } = ieee754ToDecimal(total);
+    setDetailsData({
+      DecimalTruthValue: DecimalTruthValue.value,
+      BinaryTruthValue,
+      formulaData: { ...total }
+    });
+  }, [total]);
   const all = {
     //对阶
     0: () => {
@@ -112,7 +141,7 @@ export default () => {
         const num = item.Hide + item.Mantissa + item.Round;
         return toAdd(2, total, num);
       }, 0);
-      let [left, right] = t.split('.');
+      let [left = '', right = ''] = t.split('.');
       let Mantissa = right.slice(0, 52);
       setTotal({
         ...total,
@@ -127,7 +156,6 @@ export default () => {
     // 规格化
     2: () => {
       if (progress !== 2) return false;
-      debugger;
       let all = total.Hide + total.Mantissa + total.Round;
       const [left, rigth] = all.split('.');
       // 获得阶码要加的数值
@@ -139,6 +167,11 @@ export default () => {
       // 然后和 right 拼接成隐藏位 + 尾数 + 舍入位
       const Hide = left.slice(0, 1) + '.';
       all = left.slice(1) + rigth;
+      //特殊值处理，比如 1.1125369292536007e-308 + 1.1125369292536007e-308
+      //如果隐藏位为 1. 并且指数为0， 那么就说明阶码需要变化成00000000001
+      if (+Hide === 1 && +Exponent === 0) {
+        Exponent = '00000000001';
+      }
       setTotal({
         ...total,
         Exponent,
@@ -155,7 +188,6 @@ export default () => {
       setTotal({
         ...total,
         Exponent,
-        Hide: `1.`,
         Mantissa,
         Round: ''
       });
@@ -164,7 +196,7 @@ export default () => {
     //溢出判断
     4: () => {
       if (progress !== 4) return false;
-      const { Sign, Exponent, Mantissa } = total;
+      const { Exponent, Mantissa } = total;
       let message = '';
       if (Exponent === '11111111111') {
         setTotal(SpecialValue.get(`Infinity`));
@@ -175,7 +207,7 @@ export default () => {
         message = '指数向下溢出！以舍入至0';
       }
       if (message) {
-        notification.error({
+        notification.warning({
           key: 'zhishuyichu',
           message,
           duration: 0
@@ -189,9 +221,9 @@ export default () => {
       setProgress(progress + 1);
     }
   };
-  const prev = () => {
-    setProgress(progress - 1);
-  };
+  // const prev = () => {
+  //   setProgress(progress - 1);
+  // };
   const isShow = (num) => {
     return progress > num;
   };
@@ -250,6 +282,7 @@ export default () => {
           );
         })}
       </div>
+      {detailsData && progress == steps.length && <DetailsList data={detailsData} />}
     </div>
   );
 };

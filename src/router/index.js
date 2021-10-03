@@ -6,7 +6,7 @@ import App from '../App';
 import DecimalToBinary from '@/pages/decimalToBinary';
 import MachineCode from '@/pages/machineCode';
 import DecimalToIEEE from '@/pages/decimalToIEEE';
-import IEEEAdd from '@/pages/IEEEAdd';
+import IEEEAdd from '@/pages/IEEEadd';
 import IEEEToDecimal from '@/pages/IEEEToDecimal';
 import IEEEdoc from '@/pages/IEEEdoc';
 

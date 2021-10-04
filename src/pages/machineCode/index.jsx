@@ -95,7 +95,7 @@ export default () => {
               ></Select>
               <Select defaultValue={option.bits} onChange={bitsFn}>
                 <Option value="8">8位</Option>
-                <Option value="8">16位</Option>
+                <Option value="16">16位</Option>
                 <Option value="32">32位</Option>
                 <Option value="64">64位</Option>
               </Select>
